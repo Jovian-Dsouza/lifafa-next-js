@@ -77,3 +77,25 @@
     @apply !bg-background text-foreground;
   }
 }
+
+
+/* In your global CSS or a relevant CSS file */
+.no-scrollbar::-webkit-outer-spin-button,
+.no-scrollbar::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.no-scrollbar {
+  -moz-appearance: textfield; /* Hides the default up/down arrows in Firefox */
+}
+
+/* In your global CSS or a relevant CSS file */
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
