@@ -1,6 +1,6 @@
 import { images } from "./assets";
 
-export const tokens = [
+export const tokens: Token[] = [
   {
     name: "SOL",
     symbol: "SOL",
@@ -16,3 +16,11 @@ export const tokens = [
     blockchainIcon: images.tokens.sol,
   },
 ];
+
+export interface Token {
+  name: string;
+  symbol: string;
+  icon: string;
+  blockchain: string;
+  blockchainIcon: string;
+}
