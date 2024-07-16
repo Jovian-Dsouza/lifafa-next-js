@@ -4,6 +4,9 @@ dependencies:
   '@coral-xyz/anchor':
     specifier: ^0.29.0
     version: 0.29.0
+  '@heroicons/react':
+    specifier: ^2.1.5
+    version: 2.1.5(react@18.0.0)
   '@hookform/resolvers':
     specifier: ^3.6.0
     version: 3.6.0(react-hook-form@7.51.5)
@@ -1850,6 +1853,14 @@ packages:
     resolution: {integrity: sha512-foQZKJig7Ob0BMAYBfcJk8d77QtOe7Wo4ox7ff1lQYoNNAb6jwcY1ncdoy2e9wQZzvNy7ODZCYJkK8kzmcAnAg==}
     dependencies:
       '@hapi/hoek': 9.3.0
+    dev: false
+
+  /@heroicons/react@2.1.5(react@18.0.0):
+    resolution: {integrity: sha512-FuzFN+BsHa+7OxbvAERtgBTNeZpUjgM/MIizfVkSCL2/edriN0Hx/DWRCR//aPYwO5QX/YlgLGXk+E3PcfZwjA==}
+    peerDependencies:
+      react: '>= 16'
+    dependencies:
+      react: 18.0.0
     dev: false
 
   /@hookform/resolvers@3.6.0(react-hook-form@7.51.5):
