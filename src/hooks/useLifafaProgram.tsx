@@ -160,6 +160,7 @@ export function useLifafaProgram() {
       fetchLifafa,
       program,
     }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [program],
   );
 

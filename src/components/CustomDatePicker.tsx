@@ -15,7 +15,7 @@ export const CustomDatePicker: React.FC<DatePickerProps> = ({
 }) => {
   const [isTimePickerVisible, setIsTimePickerVisible] = useState(false);
 
-  const handleDateChange = (date: Date) => {
+  const handleDateChange = (date: Date | null) => {
     setTime(date);
     setIsTimePickerVisible(false);
   };
@@ -34,7 +34,7 @@ export const CustomDatePicker: React.FC<DatePickerProps> = ({
       {isTimePickerVisible && (
         <div className="absolute mt-1 z-50">
           <DatePicker
-            selected={time}
+            selected={time ? time: new Date()}
             onChange={handleDateChange}
             inline
             className="bg-white border border-gray-200 rounded-lg shadow-md"
