@@ -23,31 +23,11 @@ export function SiteFooter({ className }: React.HTMLAttributes<HTMLElement>) {
             >
               @DsouzaJovian
             </a>
-            . Source code is available on{" "}
-            <a
-              href={siteConfig.links.github}
-              target="_blank"
-              rel="noreferrer"
-              className="font-medium underline underline-offset-4"
-            >
-              GitHub
-            </a>
             .
           </p>
         </div>
         <nav className="flex items-center gap-2">
-          <Button asChild>
-            <Link
-              target="_blank"
-              href={siteConfig.links.docs}
-              className={cn(
-                buttonVariants({ variant: "secondary", size: "sm" }),
-                "px-4",
-              )}
-            >
-              Read the Docs
-            </Link>
-          </Button>
+
 
           <ThemeModeToggle />
         </nav>

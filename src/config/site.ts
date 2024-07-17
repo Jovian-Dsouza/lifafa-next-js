@@ -1,13 +1,13 @@
 import { SiteConfig } from "@/types";
 
 export const siteConfig: SiteConfig = {
-  name: "Meme Prediction",
-  description: "Binary option market for Solana mem coin",
+  name: "Lifafa",
+  description: "Red envelope gifitng app",
   url: "https://",
-  ogImage: "https://tx.shadcn.com/og.jpg",
+  ogImage: "",
   links: {
     twitter: "https://twitter.com/DsouzaJovian",
-    github: "https://github.com/Jovian-Dsouza/meme-predict",
+    github: "https://github.com/Jovian-Dsouza/lifafa-next-js",
     docs: "https://solana.com/docs/advanced/actions",
   },
 };

@@ -23,8 +23,8 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Meme Prediction",
-  description: "Binary option market for Solana mem coin",
+  title: siteConfig.name,
+  description: siteConfig.description,
 };
 
 export default function RootLayout({
@@ -56,7 +56,7 @@ export default function RootLayout({
                   )}
                 ></div>
 
-                <main className={"flex-1 space-y-10 max-w-screen-xl mx-auto"}>
+                <main className={"flex-1 space-y-10 max-w-screen-xl mx-auto text-black"}>
                   {children}
                 </main>
 
