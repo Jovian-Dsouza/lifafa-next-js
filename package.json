@@ -44,6 +44,8 @@
     "react-datepicker": "^7.3.0",
     "react-dom": "^18",
     "react-hook-form": "^7.51.5",
+    "sass": "^1.77.8",
+    "scss": "^0.2.4",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
     "tweetnacl": "^1.0.3",

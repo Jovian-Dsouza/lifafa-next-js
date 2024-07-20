@@ -6,6 +6,7 @@ export const images = {
     sol: "/tokens/sol.jpeg",
     usdc: "/tokens/usdc.jpeg",
     wif: "/tokens/wif.jpeg",
+    send: "/tokens/send.jpeg",
   },
   envelope: {
     bottom: "/envelope/bottom.png",

@@ -40,7 +40,7 @@ export default function RootLayout({
             <SolanaProvider>
               <div className="flex min-h-screen flex-col">
                 <header className="container z-40 bg-background">
-                  <div className="flex h-20 items-center justify-between py-6">
+                  <div className="flex h-20 items-center justify-between py-10 px-12 ">
                     <MainNav items={marketingConfig.mainNav} />
                     <nav className="flex items-center gap-2">
                       <WalletButton />
@@ -56,7 +56,11 @@ export default function RootLayout({
                   )}
                 ></div>
 
-                <main className={"flex-1 space-y-10 max-w-screen-xl mx-auto text-black"}>
+                <main
+                  className={
+                    "flex-1 space-y-10 max-w-screen-xl mx-auto text-black my-auto"
+                  }
+                >
                   {children}
                 </main>
 

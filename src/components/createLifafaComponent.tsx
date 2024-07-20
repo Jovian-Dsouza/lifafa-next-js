@@ -19,7 +19,7 @@ import { CreateButton } from "./CreateButton";
 import TokenBalance from "./TokenBalance";
 
 export const CreateLifafaComponent = () => {
-//   const { executeRawTransactionWithJobStatus } = useOkto();
+  //   const { executeRawTransactionWithJobStatus } = useOkto();
   const { program: lifafaProgram, createLifafa } = useLifafaProgram();
   const [amount, setAmount] = useState(0);
   const [maxClaims, setMaxClaims] = useState<number | null>(null);
@@ -28,24 +28,24 @@ export const CreateLifafaComponent = () => {
   const [transactionModalVisible, setTransactionModalVisible] = useState(false);
   const [envelopeModalVisible, setEnvelopModalVisible] = useState(false);
   const [id, setId] = useState();
-//   const { user } = useAppContext();
+  //   const { user } = useAppContext();
   const [selectedToken, setSelectedToken] = useState(tokens[0]);
   const [txnData, setTxnData] = useState();
-//   const { walletPublicKey } = useWallet();
+  //   const { walletPublicKey } = useWallet();
 
-//   const fee = useMemo(() => {
-//     if (txnData) {
-//       return txnData.fee;
-//     }
-//     return "0";
-//   }, [txnData]);
+  //   const fee = useMemo(() => {
+  //     if (txnData) {
+  //       return txnData.fee;
+  //     }
+  //     return "0";
+  //   }, [txnData]);
 
-//   const timeLeft = useMemo(() => {
-//     if (time) {
-//       return dayjs(time).diff(dayjs(), "second");
-//     }
-//     return 0;
-//   }, [time]);
+  //   const timeLeft = useMemo(() => {
+  //     if (time) {
+  //       return dayjs(time).diff(dayjs(), "second");
+  //     }
+  //     return 0;
+  //   }, [time]);
 
   const isCreateDisabled = useMemo(() => {
     return (
@@ -103,7 +103,7 @@ export const CreateLifafaComponent = () => {
   }
 
   return (
-    <div className="min-w-full bg-[#F5F6FE]  rounded-3xl p-4 shadow">
+    <div className="w-[22rem] bg-[#F5F6FE]  rounded-3xl p-4 shadow">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold text-black">Create Lifafa</h2>
         <TokenBalance token={selectedToken} />
@@ -134,7 +134,10 @@ export const CreateLifafaComponent = () => {
       {/* Description */}
       <MultilineTextInput text={desc} setText={setDesc} maxLength={50} />
 
-      <CreateButton onPress={() => handleCreate()} disabled={isCreateDisabled} />
+      <CreateButton
+        onPress={() => handleCreate()}
+        disabled={isCreateDisabled}
+      />
 
       {/* Modals */}
       {/* <TransactionRequestModal

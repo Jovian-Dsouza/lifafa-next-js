@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { ThemeModeToggle } from "@/components/theme-mode-toggle";
 import { useLifafaProgram } from "@/hooks/useLifafaProgram";
 import { CreateLifafaComponent } from "@/components/createLifafaComponent";
+import Image from "next/image";
+import HeroImage from "../../public/Hero-section.png";
 
 export default function CreateMarketPage() {
   const [name, setName] = useState(""); // State for marketplace name
@@ -30,7 +32,8 @@ export default function CreateMarketPage() {
   };
 
   return (
-    <div className="min-h-screen w-[23rem] flex flex-col items-center justify-center bg-background">
+    <div className=" w-full flex items-center justify-center bg-background space-x-[14rem] mt-12 ">
+      <Image src={HeroImage} alt="envelop-image" className=" h-[30rem]" />
       <CreateLifafaComponent />
     </div>
   );
