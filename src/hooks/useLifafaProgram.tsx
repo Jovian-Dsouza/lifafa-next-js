@@ -15,7 +15,17 @@ import { useAnchorWallet, useWallet } from "@solana/wallet-adapter-react";
 import { useConnection } from "@solana/wallet-adapter-react";
 
 export const LIFAFA_PROGRAM_ID = (IDL as Lifafa).address;
+const lifafaProgramId = new PublicKey(LIFAFA_PROGRAM_ID);
 export const LIFAFA_SEED = "lifafa";
+
+export function getLifafaPDA(
+  lifafaId: number,
+): [anchor.web3.PublicKey, number] {
+  return anchor.web3.PublicKey.findProgramAddressSync(
+    [Buffer.from(LIFAFA_SEED), new BN(lifafaId).toArrayLike(Buffer, "le", 8)],
+    lifafaProgramId,
+  );
+}
 
 export function useLifafaProgram() {
   const { publicKey: walletPublicKey, signTransaction } = useWallet();
@@ -28,7 +38,7 @@ export function useLifafaProgram() {
       });
     }
   }, [connection, wallet]);
-  const lifafaProgramId = new PublicKey(LIFAFA_PROGRAM_ID);
+  
 
   const program = useMemo(() => {
     if (!provider) {
@@ -62,6 +72,8 @@ export function useLifafaProgram() {
       lifafaProgramId,
     );
   }
+
+
 
   async function createLifafa(
     id: number,
