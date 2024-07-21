@@ -1,24 +1,171 @@
 {
-  "version": "0.1.0",
-  "name": "lifafa",
+  "address": "2h4ToTTMT93ApLUHGqsvFofsD9JSRdLBsMpAxohkgT12",
+  "metadata": {
+    "name": "lifafa",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
   "instructions": [
     {
-      "name": "createSolLifafa",
+      "name": "claim_sol_lifafa",
+      "discriminator": [
+        209,
+        19,
+        123,
+        104,
+        109,
+        66,
+        48,
+        71
+      ],
       "accounts": [
         {
           "name": "lifafa",
-          "isMut": true,
-          "isSigner": false
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  108,
+                  105,
+                  102,
+                  97,
+                  102,
+                  97
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user_claim",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  95,
+                  99,
+                  108,
+                  97,
+                  105,
+                  109
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "lifafa"
+              },
+              {
+                "kind": "account",
+                "path": "signer"
+              }
+            ]
+          }
         },
         {
           "name": "signer",
-          "isMut": true,
-          "isSigner": true
+          "writable": true,
+          "signer": true
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "_id",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "create_sol_lifafa",
+      "discriminator": [
+        204,
+        69,
+        222,
+        66,
+        135,
+        118,
+        64,
+        172
+      ],
+      "accounts": [
+        {
+          "name": "lifafa",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  108,
+                  105,
+                  102,
+                  97,
+                  102,
+                  97
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user_claim",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  95,
+                  99,
+                  108,
+                  97,
+                  105,
+                  109
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "lifafa"
+              },
+              {
+                "kind": "account",
+                "path": "signer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
         }
       ],
       "args": [
@@ -31,15 +178,15 @@
           "type": "u64"
         },
         {
-          "name": "timeLimitInSeconds",
+          "name": "time_limit_in_seconds",
           "type": "i64"
         },
         {
-          "name": "maxClaims",
-          "type": "u16"
+          "name": "max_claims",
+          "type": "u64"
         },
         {
-          "name": "ownerName",
+          "name": "owner_name",
           "type": "string"
         },
         {
@@ -49,48 +196,50 @@
       ]
     },
     {
-      "name": "claimSolLifafa",
+      "name": "delete_sol_lifafa",
+      "discriminator": [
+        188,
+        252,
+        75,
+        30,
+        255,
+        168,
+        84,
+        151
+      ],
       "accounts": [
         {
           "name": "lifafa",
-          "isMut": true,
-          "isSigner": false
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  108,
+                  105,
+                  102,
+                  97,
+                  102,
+                  97
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "_id"
+              }
+            ]
+          }
         },
         {
           "name": "signer",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          "writable": true,
+          "signer": true
         }
       ],
       "args": [
         {
-          "name": "id",
-          "type": "u64"
-        }
-      ]
-    },
-    {
-      "name": "deleteSolLifafa",
-      "accounts": [
-        {
-          "name": "lifafa",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "signer",
-          "isMut": true,
-          "isSigner": true
-        }
-      ],
-      "args": [
-        {
-          "name": "id",
+          "name": "_id",
           "type": "u64"
         }
       ]
@@ -99,58 +248,29 @@
   "accounts": [
     {
       "name": "Lifafa",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "id",
-            "type": "u64"
-          },
-          {
-            "name": "creationTime",
-            "type": "i64"
-          },
-          {
-            "name": "timeLimit",
-            "type": "i64"
-          },
-          {
-            "name": "owner",
-            "type": "publicKey"
-          },
-          {
-            "name": "ownerName",
-            "type": "string"
-          },
-          {
-            "name": "claimed",
-            "type": {
-              "vec": {
-                "array": [
-                  "u8",
-                  8
-                ]
-              }
-            }
-          },
-          {
-            "name": "maxClaims",
-            "type": "u16"
-          },
-          {
-            "name": "mintOfTokenBeingSent",
-            "type": "publicKey"
-          },
-          {
-            "name": "amount",
-            "type": "u64"
-          },
-          {
-            "name": "desc",
-            "type": "string"
-          }
-        ]
-      }
+      "discriminator": [
+        50,
+        94,
+        121,
+        47,
+        119,
+        66,
+        206,
+        200
+      ]
+    },
+    {
+      "name": "UserClaim",
+      "discriminator": [
+        228,
+        142,
+        195,
+        181,
+        228,
+        147,
+        32,
+        209
+      ]
     }
   ],
   "errors": [
@@ -190,7 +310,70 @@
       "msg": "Description too long"
     }
   ],
-  "metadata": {
-    "address": "AXBZp473xo61tmpSryZfuZMGBs2c1q2MdVh2yW7GLS1z"
-  }
+  "types": [
+    {
+      "name": "Lifafa",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "id",
+            "type": "u64"
+          },
+          {
+            "name": "creation_time",
+            "type": "i64"
+          },
+          {
+            "name": "time_limit",
+            "type": "i64"
+          },
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "owner_name",
+            "type": "string"
+          },
+          {
+            "name": "claims",
+            "type": "u64"
+          },
+          {
+            "name": "max_claims",
+            "type": "u64"
+          },
+          {
+            "name": "mint_of_token_being_sent",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "desc",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UserClaim",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "claimed",
+            "type": "bool"
+          },
+          {
+            "name": "amount_claimed",
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ]
 }
