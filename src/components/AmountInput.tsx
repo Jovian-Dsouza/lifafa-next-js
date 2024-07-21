@@ -1,6 +1,6 @@
 import { Token } from "@/data/constants";
 import { getTokenPrice } from "@/utils/jupiter-price";
-import React, { useMemo } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 
 interface AmountInputProps {
   amount: number;
@@ -13,19 +13,26 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   setAmount,
   token,
 }) => {
+
+  const [tokenPrice, setTokenPrice] = useState<number>(0);
   
   const price = useMemo(() => {
     // TODO: Update with price API
     if (!amount) {
       return 0;
     }
-    return amount * 11906.51;
-  }, [amount]);
+    return amount * tokenPrice;
+  }, [amount, tokenPrice]);
 
-  // async function updateTokenPrice() {
-  //   const token_price = getTokenPrice(token.symbol);
-    
-  // }
+  async function updateTokenPrice() {
+    const token_price = await getTokenPrice(token.symbol);
+    // console.log(token_price)
+    setTokenPrice(token_price)
+  }
+
+  useEffect(()=>{
+    updateTokenPrice()
+  }, [amount])
 
   function handleAmountChange(e: React.ChangeEvent<HTMLInputElement>) {
     const floatAmount = parseFloat(e.target.value);
@@ -41,7 +48,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
         className="text-xl text-end font-semibold outline-none bg-white w-20 no-scrollbar"
         min="0"
       />
-      <p className="text-xs text-gray-500">₹{price.toFixed(2)}</p>
+      <p className="text-xs text-gray-500">{price.toFixed(2)} USDC</p>
     </div>
   );
 };
