@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ThemeModeToggle } from "@/components/theme-mode-toggle";
-import { useLifafaProgram } from "@/hooks/useLifafaProgram";
+// import { useLifafaProgram } from "@/hooks/useLifafaProgram";
 import { CreateLifafaComponent } from "@/components/createLifafaComponent";
 import Image from "next/image";
 import HeroImage from "../../public/Hero-section.png";
@@ -12,7 +12,7 @@ export default function CreateMarketPage() {
   const [fee, setFee] = useState(""); // State for transaction fee
   const [loading, setLoading] = useState(false); // State for loading indicator
 
-  const { createLifafa } = useLifafaProgram(); // Hook to manage marketplace creation
+  // const { createLifafa } = useLifafaProgram(); // Hook to manage marketplace creation
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,8 +32,8 @@ export default function CreateMarketPage() {
   };
 
   return (
-    <div className=" w-full flex items-center justify-center bg-background space-x-[14rem]">
-      <Image src={HeroImage} alt="envelop-image" className=" h-[30rem]" />
+    <div className="w-full flex flex-col sm:flex-row items-center justify-center bg-background gap-[3rem] sm:gap-[14rem] mt-5">
+      <Image src={HeroImage} alt="envelop-image" className="w-auto h-[18rem] sm:h-[30rem]" />
       <CreateLifafaComponent />
     </div>
   );
