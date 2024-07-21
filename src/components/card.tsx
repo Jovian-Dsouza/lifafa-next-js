@@ -19,7 +19,14 @@ const Card = () => {
       </div>
 
       {/* Progress Slider */}
-      <div className={styles.progressSlider}></div>
+      <div className={styles.progressSlider}>
+        <progress
+          className={styles.progressBar}
+          max="100"
+          value="70"
+        ></progress>
+        <text>28/100 claimed</text>
+      </div>
 
       {/* Text in Border */}
       <div className={styles.textInBborder}>

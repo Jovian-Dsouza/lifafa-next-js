@@ -55,12 +55,33 @@
 
 /* Progress Slider */
 .progressSlider {
-  height: 0.375rem;
-  flex: 1 0 0;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+.progressBar {
+  height: 8px; /* Set height of the progress bar */
+  // border-radius: 4px;
+  // background-color: #fff;
 }
 
+.progressBar::-webkit-progress-value {
+  background-color: #37b271; /* Progress bar color for WebKit browsers */
+  border-radius: 4px; /* Rounded corners for WebKit browsers */
+}
+/* Override styles for specific browser vendors */
+.progressBar::-webkit-progress-bar {
+  background-color: #d3d3d3; /* Background color for WebKit browsers */
+  border-radius: 4px; /* Rounded corners for WebKit browsers */
+}
+
+// .progressBar::-moz-progress-bar {
+//   background-color: #5166ee; /* Progress bar color for Firefox */
+//   border-radius: 4px; /* Rounded corners for Firefox */
+// }
+
 .progressText {
-  color: var(--Text-Secondary, #707070);
+  color: var(--Text-Secondary, #fff);
   // font-family: Inter;
   font-size: 0.75rem;
   font-style: normal;
