@@ -12,7 +12,6 @@ export const TokenSelector = ({
   onSelect: any;
 }) => {
   const [modalVisible, setModalVisible] = useState(true);
-  console.log(token);
   function handleSelect() {
     onSelect(tokens[0]); //TODO: add token based on drop box
   }
