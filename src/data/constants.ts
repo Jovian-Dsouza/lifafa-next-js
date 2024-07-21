@@ -5,15 +5,8 @@ export const tokens: Token[] = [
     name: "SEND",
     symbol: "SEND",
     icon: images.tokens.send,
-    blockchain: "Send",
-    blockchainIcon: images.tokens.send,
-  },
-  {
-    name: "SEND",
-    symbol: "SEND",
-    icon: images.tokens.send,
-    blockchain: "Send",
-    blockchainIcon: images.tokens.send,
+    blockchain: "SOL",
+    blockchainIcon: images.tokens.sol,
   },
 ];
 

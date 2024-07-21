@@ -32,7 +32,7 @@ export default function CreateMarketPage() {
   };
 
   return (
-    <div className=" w-full flex items-center justify-center bg-background space-x-[14rem] mt-12 ">
+    <div className=" w-full flex items-center justify-center bg-background space-x-[14rem]">
       <Image src={HeroImage} alt="envelop-image" className=" h-[30rem]" />
       <CreateLifafaComponent />
     </div>

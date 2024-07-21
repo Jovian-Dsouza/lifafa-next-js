@@ -10,6 +10,8 @@ import { cn } from "@/lib/utils";
 import { Icons } from "@/components/icons";
 import { MobileNav } from "@/components/mobile-nav";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import Logo from "../../public/Lifafa-Icon.svg";
 
 interface MainNavProps {
   items?: MainNavItem[];
@@ -26,7 +28,8 @@ export function MainNav({ items, children }: MainNavProps) {
         href="/"
         className="hidden text-lg items-center space-x-2 md:flex hover:underline underline-offset-4"
       >
-        <Icons.logo />
+        {/* <Icons.logo /> */}
+        <Image src={Logo} alt="Logo" />
         <span className="hidden font-bold sm:inline-block">
           {siteConfig.name}
         </span>
