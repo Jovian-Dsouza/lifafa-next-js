@@ -26,7 +26,7 @@ const LIFAFA_PROGRAM_ID = (IDL as Lifafa).address;
 const lifafaProgramId = new PublicKey(LIFAFA_PROGRAM_ID);
 const LIFAFA_SEED = "lifafa";
 
-export function getLifafaPDA(
+function getLifafaPDA(
   lifafaId: number,
 ): [anchor.web3.PublicKey, number] {
   return anchor.web3.PublicKey.findProgramAddressSync(
