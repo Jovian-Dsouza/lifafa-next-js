@@ -26,9 +26,7 @@ const LIFAFA_PROGRAM_ID = (IDL as Lifafa).address;
 const lifafaProgramId = new PublicKey(LIFAFA_PROGRAM_ID);
 const LIFAFA_SEED = "lifafa";
 
-function getLifafaPDA(
-  lifafaId: number,
-): [anchor.web3.PublicKey, number] {
+function getLifafaPDA(lifafaId: number): [anchor.web3.PublicKey, number] {
   return anchor.web3.PublicKey.findProgramAddressSync(
     [Buffer.from(LIFAFA_SEED), new BN(lifafaId).toArrayLike(Buffer, "le", 8)],
     lifafaProgramId,
@@ -90,9 +88,9 @@ export const GET = async (req: Request) => {
     const amountString = (lifafaData.amount / LAMPORTS_PER_SOL).toString();
 
     const payload: ActionGetResponse = {
-      title: lifafaData.desc,
+      title: `🎉 Claim your share of ${amountString} SOL now!🚀✨`,
+      description: lifafaData.desc,
       icon: new URL("/claim_lifafa_og.png", new URL(req.url).origin).toString(),
-      description: `🎉 Claim your share of ${amountString} SOL now!🚀✨`,
       label: `Claim Now`,
       disabled: isClaimDisabled(lifafaData),
       // links: {
@@ -158,7 +156,7 @@ export const POST = async (req: Request) => {
     ) as unknown as anchor.Program<Lifafa>;
 
     const instruction = await program.methods
-      .claimSolLifafa(new anchor.BN(id))
+      .claimSolLifafa(new anchor.BN(lifafaId))
       .accounts({
         signer: wallet.publicKey,
       })
@@ -195,4 +193,3 @@ export const POST = async (req: Request) => {
     });
   }
 };
-
