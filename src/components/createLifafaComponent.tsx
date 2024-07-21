@@ -1,12 +1,12 @@
 import { useState, useMemo } from "react";
 import { useLifafaProgram } from "../hooks/useLifafaProgram";
-// import { getRandomId } from "../utils/random";
+import { getRandomId } from "@/utils/random";
 // import { useAppContext } from "../providers/AppContextProvider";
 import { tokens } from "@/data/constants";
 // import { useWallet } from "../providers/WalletProvider";
 // import { storeLifafa } from "../utils/firestoreUtils";
 // import { handleCopyLink, handleShare } from "../utils/share";
-// import dayjs from "dayjs";
+import dayjs from "dayjs";
 
 import { MultilineTextInput } from "./MultilineTextInput";
 // import { TransactionRequestModal } from "./TransactionRequestModal";
@@ -17,6 +17,7 @@ import { MaxClaimsInput } from "./MaxClaimsInput";
 import { CustomDatePicker } from "./CustomDatePicker";
 import { CreateButton } from "./CreateButton";
 import TokenBalance from "./TokenBalance";
+// import { useAnchorWallet, useWallet } from "@solana/wallet-adapter-react";
 
 export const CreateLifafaComponent = () => {
   //   const { executeRawTransactionWithJobStatus } = useOkto();
@@ -31,7 +32,6 @@ export const CreateLifafaComponent = () => {
   //   const { user } = useAppContext();
   const [selectedToken, setSelectedToken] = useState(tokens[0]);
   const [txnData, setTxnData] = useState();
-  //   const { walletPublicKey } = useWallet();
 
   //   const fee = useMemo(() => {
   //     if (txnData) {
@@ -40,12 +40,12 @@ export const CreateLifafaComponent = () => {
   //     return "0";
   //   }, [txnData]);
 
-  //   const timeLeft = useMemo(() => {
-  //     if (time) {
-  //       return dayjs(time).diff(dayjs(), "second");
-  //     }
-  //     return 0;
-  //   }, [time]);
+  const timeLeft = useMemo(() => {
+    if (time) {
+      return dayjs(time).diff(dayjs(), "second");
+    }
+    return 0;
+  }, [time]);
 
   const isCreateDisabled = useMemo(() => {
     return (
@@ -59,47 +59,27 @@ export const CreateLifafaComponent = () => {
 
   async function handleCreate() {
     // setTransactionModalVisible(true);
-    // const createLifafaData = {
-    //   id: getRandomId(),
-    //   amount: Number(amount),
-    //   timeleft: timeLeft,
-    //   maxClaims: Number(maxClaims),
-    //   ownerName: user,
-    //   desc: desc,
-    // };
-    // console.log("CreateLifafaData: ", createLifafaData);
-    // try {
-    //   const txnDataTmp = await createLifafa(
-    //     createLifafaData.id,
-    //     createLifafaData.amount,
-    //     createLifafaData.timeleft,
-    //     createLifafaData.maxClaims,
-    //     createLifafaData.ownerName,
-    //     createLifafaData.desc,
-    //   );
-    //   setTxnData(txnDataTmp);
-    //   setId(createLifafaData.id);
-    // } catch (error) {
-    //   console.error("create Lifafa: ", error);
-    // }
-  }
-
-  async function handleConfirm() {
-    // try {
-    //   const result = await executeRawTransactionWithJobStatus(txnData.rawTxn);
-    //   console.log(result);
-    //   if (result.status === "SUCCESS") {
-    //     storeLifafa(walletPublicKey, id, result.transaction_hash, "created");
-    //     setEnvelopModalVisible(true);
-    //   } else {
-    //     alert("Transaction Failed!");
-    //   }
-    // } catch (error) {
-    //   console.error("handleConfirm: ", error);
-    //   alert("Transaction Failed!");
-    // } finally {
-    //   setTransactionModalVisible(false);
-    // }
+    const createLifafaData = {
+      id: getRandomId(),
+      amount: Number(amount),
+      timeleft: timeLeft,
+      maxClaims: Number(maxClaims),
+      ownerName: "lifafa",
+      desc: desc,
+    };
+    console.log("CreateLifafaData: ", createLifafaData);
+    try {
+      const txnDataTmp = await createLifafa(
+        createLifafaData.id,
+        createLifafaData.amount,
+        createLifafaData.timeleft,
+        createLifafaData.maxClaims,
+        createLifafaData.ownerName,
+        createLifafaData.desc,
+      );
+    } catch (error) {
+      console.error("create Lifafa: ", error);
+    }
   }
 
   return (
@@ -140,16 +120,7 @@ export const CreateLifafaComponent = () => {
       />
 
       {/* Modals */}
-      {/* <TransactionRequestModal
-        amount={amount}
-        symbol={selectedToken.symbol}
-        fee={fee}
-        visible={transactionModalVisible}
-        setVisible={setTransactionModalVisible}
-        onAccept={handleConfirm}
-        onReject={() => {}}
-      />
-
+      {/* 
       <EnvelopeModal
         amount={amount}
         tokenSymbol={selectedToken.symbol}

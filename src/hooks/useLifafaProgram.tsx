@@ -3,17 +3,18 @@ import { useMemo } from "react";
 import * as anchor from "@coral-xyz/anchor";
 import { BN } from "@coral-xyz/anchor";
 
-import { IDL, Lifafa, programId } from "@/contracts/lifafa";
+import { Lifafa } from "@/contracts/lifafa";
+import IDL from "@/contracts/lifafa.json"
+
 import {
   Transaction,
   LAMPORTS_PER_SOL,
-  SystemProgram,
   PublicKey,
 } from "@solana/web3.js";
 import { useAnchorWallet, useWallet } from "@solana/wallet-adapter-react";
 import { useConnection } from "@solana/wallet-adapter-react";
 
-export const LIFAFA_PROGRAM_ID = programId;
+export const LIFAFA_PROGRAM_ID = (IDL as Lifafa).address;
 export const LIFAFA_SEED = "lifafa";
 
 export function useLifafaProgram() {
@@ -33,7 +34,7 @@ export function useLifafaProgram() {
     if (!provider) {
       return null;
     }
-    return new Program<Lifafa>(IDL, programId, provider);
+    return new Program<Lifafa>(IDL as Lifafa, provider);
   }, [provider]);
 
   async function processAndSend(
@@ -81,20 +82,17 @@ export function useLifafaProgram() {
       throw new Error("Provider not initialized");
     }
     try {
-      const [lifafaPDA] = getLifafaPDA(id);
       const instruction = await program.methods
         .createSolLifafa(
           new anchor.BN(id),
           new anchor.BN(amount * LAMPORTS_PER_SOL),
           new anchor.BN(timeLimit),
-          maxClaims,
+          new anchor.BN(maxClaims),
           ownerName,
           desc,
         )
         .accounts({
-          lifafa: lifafaPDA,
           signer: walletPublicKey,
-          systemProgram: SystemProgram.programId,
         })
         .instruction();
       await processAndSend(instruction);
@@ -120,9 +118,7 @@ export function useLifafaProgram() {
       const instruction = await program.methods
         .claimSolLifafa(new anchor.BN(id))
         .accounts({
-          lifafa: lifafaPDA,
           signer: walletPublicKey,
-          systemProgram: SystemProgram.programId,
         })
         .instruction();
       await processAndSend(instruction);
