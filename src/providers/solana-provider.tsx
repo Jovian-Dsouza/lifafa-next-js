@@ -20,20 +20,19 @@ require("@solana/wallet-adapter-react-ui/styles.css");
 export const WalletButton = dynamic(
   async () =>
     (await import("@solana/wallet-adapter-react-ui")).WalletMultiButton,
-  { ssr: false }
+  { ssr: false },
 );
 
 const TipLinkProvider = dynamic(
   async () => await import("./tiplink-provider"),
   {
     ssr: false,
-  }
+  },
 );
 
 export function SolanaProvider({ children }: { children: ReactNode }) {
-  const endpoint = process.env.NEXT_PUBLIC_MAINNET_RPC
-    ? process.env.NEXT_PUBLIC_MAINNET_RPC
-    : clusterApiUrl("devnet");
+  const endpoint =
+    process.env.NEXT_PUBLIC_SOLANA_RPC! || clusterApiUrl("devnet");
   const onError = useCallback((error: WalletError) => {
     console.error(error);
   }, []);
@@ -48,13 +47,13 @@ export function SolanaProvider({ children }: { children: ReactNode }) {
       new PhantomWalletAdapter(),
       new SolflareWalletAdapter(),
     ],
-    []
+    [],
   );
   return (
     <ConnectionProvider endpoint={endpoint}>
       <WalletProvider wallets={wallets} onError={onError} autoConnect={true}>
         {/* <TipLinkProvider> */}
-          <WalletModalProvider>{children}</WalletModalProvider>
+        <WalletModalProvider>{children}</WalletModalProvider>
         {/* </TipLinkProvider> */}
       </WalletProvider>
     </ConnectionProvider>

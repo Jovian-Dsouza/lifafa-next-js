@@ -48,7 +48,7 @@ interface LifafaData {
 
 async function getLifafaData(id: number): Promise<LifafaData> {
   const connection = new Connection(
-    process.env.SOLANA_RPC! || clusterApiUrl("devnet"),
+    process.env.NEXT_PUBLIC_SOLANA_RPC! || clusterApiUrl("devnet"),
   );
   const wallet = new anchor.Wallet(anchor.web3.Keypair.generate());
   const provider = new anchor.AnchorProvider(connection, wallet);
@@ -145,7 +145,7 @@ export const POST = async (req: Request) => {
     }
 
     const connection = new Connection(
-      process.env.SOLANA_RPC! || clusterApiUrl("devnet"),
+      process.env.NEXT_PUBLIC_SOLANA_RPC! || clusterApiUrl("devnet"),
     );
     const wallet = new anchor.Wallet(anchor.web3.Keypair.generate());
     const provider = new anchor.AnchorProvider(connection, wallet);
@@ -158,7 +158,7 @@ export const POST = async (req: Request) => {
     const instruction = await program.methods
       .claimSolLifafa(new anchor.BN(lifafaId))
       .accounts({
-        signer: wallet.publicKey,
+        signer: account,
       })
       .instruction();
 
