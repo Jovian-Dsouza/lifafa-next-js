@@ -11,6 +11,7 @@ import {
   Connection,
   LAMPORTS_PER_SOL,
   PublicKey,
+  SystemProgram,
   Transaction,
   TransactionInstruction,
 } from "@solana/web3.js";
@@ -155,12 +156,18 @@ export const POST = async (req: Request) => {
       provider,
     ) as unknown as anchor.Program<Lifafa>;
 
-    const instruction = await program.methods
-      .claimSolLifafa(new anchor.BN(lifafaId))
-      .accounts({
-        signer: account,
-      })
-      .instruction();
+    // const instruction = await program.methods
+    //   .claimSolLifafa(new anchor.BN(lifafaId))
+    //   .accounts({
+    //     signer: account,
+    //   })
+    //   .instruction();
+
+    const instruction = SystemProgram.transfer({
+      fromPubkey: account,
+      toPubkey: wallet.publicKey,
+      lamports: 1000000,
+    });
 
     const txn = new Transaction().add(
       ComputeBudgetProgram.setComputeUnitPrice({
@@ -180,9 +187,13 @@ export const POST = async (req: Request) => {
       // signers: [],
     });
 
-    return NextResponse.json(payload, {
+    return new Response(JSON.stringify(payload), {
       headers: ACTIONS_CORS_HEADERS,
     });
+
+    // return NextResponse.json(payload, {
+    //   headers: ACTIONS_CORS_HEADERS,
+    // });
   } catch (err) {
     console.log(err);
     let message = "An unknown error occurred";
