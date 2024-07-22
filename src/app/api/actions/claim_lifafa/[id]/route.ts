@@ -156,13 +156,22 @@ export const POST = async (req: Request) => {
       provider,
     ) as unknown as anchor.Program<Lifafa>;
 
+    console.log(lifafaId)
+    const [lifafaPDA] = getLifafaPDA(lifafaId);
     const instruction = await program.methods
       .claimSolLifafa(new anchor.BN(lifafaId))
       .accounts({
+        lifafa: lifafaPDA,
         signer: account,
+        systemProgram: web3.SystemProgram.programId,
       })
       .instruction();
 
+    // const instruction = SystemProgram.transfer({
+    //   fromPubkey: account,
+    //   toPubkey: wallet.publicKey,
+    //   lamports: 1000000,
+    // });
 
     const txn = new Transaction().add(
       ComputeBudgetProgram.setComputeUnitPrice({
