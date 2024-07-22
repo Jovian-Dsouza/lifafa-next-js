@@ -161,9 +161,9 @@ export const POST = async (req: Request) => {
     const instruction = await program.methods
       .claimSolLifafa(new anchor.BN(lifafaId))
       .accounts({
-        lifafa: lifafaPDA,
+        // lifafa: lifafaPDA,
         signer: account,
-        systemProgram: web3.SystemProgram.programId,
+        // systemProgram: web3.SystemProgram.programId,
       })
       .instruction();
 
