@@ -156,18 +156,13 @@ export const POST = async (req: Request) => {
       provider,
     ) as unknown as anchor.Program<Lifafa>;
 
-    // const instruction = await program.methods
-    //   .claimSolLifafa(new anchor.BN(lifafaId))
-    //   .accounts({
-    //     signer: account,
-    //   })
-    //   .instruction();
+    const instruction = await program.methods
+      .claimSolLifafa(new anchor.BN(lifafaId))
+      .accounts({
+        signer: account,
+      })
+      .instruction();
 
-    const instruction = SystemProgram.transfer({
-      fromPubkey: account,
-      toPubkey: wallet.publicKey,
-      lamports: 1000000,
-    });
 
     const txn = new Transaction().add(
       ComputeBudgetProgram.setComputeUnitPrice({
