@@ -17,6 +17,8 @@ import { MaxClaimsInput } from "./MaxClaimsInput";
 import { CustomDatePicker } from "./CustomDatePicker";
 import { CreateButton } from "./CreateButton";
 import TokenBalance from "./TokenBalance";
+import { EnvelopeModal } from "./EnvelopeModal";
+import { openDailect } from "@/utils/share";
 // import { useAnchorWallet, useWallet } from "@solana/wallet-adapter-react";
 
 export const CreateLifafaComponent = () => {
@@ -28,7 +30,7 @@ export const CreateLifafaComponent = () => {
   const [desc, setDesc] = useState("");
   const [transactionModalVisible, setTransactionModalVisible] = useState(false);
   const [envelopeModalVisible, setEnvelopModalVisible] = useState(false);
-  const [id, setId] = useState();
+  const [id, setId] = useState("");
   //   const { user } = useAppContext();
   const [selectedToken, setSelectedToken] = useState(tokens[0]);
   const [txnData, setTxnData] = useState();
@@ -77,6 +79,8 @@ export const CreateLifafaComponent = () => {
         createLifafaData.ownerName,
         createLifafaData.desc,
       );
+      setEnvelopModalVisible(true)
+      setId(createLifafaData.id.toString())
     } catch (error) {
       console.error("create Lifafa: ", error);
     }
@@ -120,18 +124,17 @@ export const CreateLifafaComponent = () => {
       />
 
       {/* Modals */}
-      {/* 
       <EnvelopeModal
         amount={amount}
         tokenSymbol={selectedToken.symbol}
         tokenIcon={selectedToken.icon}
         timeLeft={timeLeft}
-        maxClaims={maxClaims}
+        maxClaims={maxClaims ? maxClaims : 0}
         visible={envelopeModalVisible}
         setVisible={setEnvelopModalVisible}
-        onCopyLink={() => handleCopyLink(id)}
-        onShare={() => handleShare(id)}
-      /> */}
+        onCopyLink={() => {}}
+        onShare={() => {openDailect(id)}}
+      />
     </div>
   );
 };
