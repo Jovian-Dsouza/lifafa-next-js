@@ -25,7 +25,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   }, [amount, tokenPrice]);
 
   async function updateTokenPrice() {
-    const token_price = await getTokenPrice(token.symbol);
+    const token_price = await getTokenPrice(token.address);
     // console.log(token_price)
     setTokenPrice(token_price)
   }

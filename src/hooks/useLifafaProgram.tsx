@@ -2,19 +2,15 @@ import { Program } from "@coral-xyz/anchor";
 import { useMemo, useEffect } from "react";
 import * as anchor from "@coral-xyz/anchor";
 import { BN } from "@coral-xyz/anchor";
-
 import { Lifafa } from "@/contracts/lifafa";
 import IDL from "@/contracts/lifafa.json";
 
-import { Transaction, LAMPORTS_PER_SOL, PublicKey, ComputeBudgetProgram } from "@solana/web3.js";
-import { Token } from "@/data/constants";
+import { Transaction, PublicKey, ComputeBudgetProgram } from "@solana/web3.js";
 import { useAnchorWallet, useWallet } from "@solana/wallet-adapter-react";
 import { useConnection } from "@solana/wallet-adapter-react";
 import {
-  ASSOCIATED_TOKEN_PROGRAM_ID,
   createAssociatedTokenAccountInstruction,
-  getAssociatedTokenAddress,
-  getOrCreateAssociatedTokenAccount,
+  getAssociatedTokenAddressSync,
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 
@@ -55,24 +51,15 @@ export function useLifafaProgram() {
     return new Program<Lifafa>(IDL as Lifafa, provider);
   }, [provider]);
 
-  async function processAndSend(
-    instructions: anchor.web3.TransactionInstruction[],
-  ) {
-    const txn = new Transaction().add(...instructions);
-    console.log("txn created")
+  async function processAndSend(txn: anchor.web3.Transaction) {
     txn.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
     txn.feePayer = walletPublicKey!;
-
     const signedTransaction = await signTransaction!(txn);
     const txid = await connection.sendRawTransaction(
       signedTransaction.serialize(),
     );
     await connection.confirmTransaction(txid);
-
-    // Provide Solscan link
-    console.log(
-      `View transaction on Solscan: https://solscan.io/tx/${txid}`,
-    );
+    console.log(`View transaction on Solscan: https://solscan.io/tx/${txid}`);
   }
 
   function getLifafaPDA(lifafaId: any) {
@@ -106,22 +93,24 @@ export function useLifafaProgram() {
       const addPriorityFee = ComputeBudgetProgram.setComputeUnitPrice({
         microLamports: 15000,
       });
-      const instructions = [addPriorityFee];
+      const txn = new Transaction().add(addPriorityFee);
+
       const [lifafaPDA] = getLifafaPDA(id);
-      const vault = await getAssociatedTokenAddress(mint, wallet.publicKey);
-      if (vault === null) {
-        instructions.push(
+      console.log("lifafa", lifafaPDA.toString());
+
+      const vault = getAssociatedTokenAddressSync(mint, lifafaPDA, true);
+      const vaultAccountInfo = await connection.getAccountInfo(vault);
+      if (vaultAccountInfo === null) {
+        console.log("No vault account info creating one");
+        txn.add(
           createAssociatedTokenAccountInstruction(
             wallet.publicKey,
             vault,
             lifafaPDA,
             mint,
-            TOKEN_PROGRAM_ID,
-            ASSOCIATED_TOKEN_PROGRAM_ID,
           ),
         );
       }
-      console.log("vault address", vault);
       const createLifafaInstruction = await program.methods
         .createSplLifafa(
           new anchor.BN(id),
@@ -139,9 +128,9 @@ export function useLifafaProgram() {
           tokenProgram: TOKEN_PROGRAM_ID,
         })
         .instruction();
-      instructions.push(createLifafaInstruction)
-      
-      await processAndSend(instructions);
+      txn.add(createLifafaInstruction);
+
+      await processAndSend(txn);
     } catch (error) {
       console.error("Transaction failed", error);
       throw error;
@@ -163,42 +152,41 @@ export function useLifafaProgram() {
       const addPriorityFee = ComputeBudgetProgram.setComputeUnitPrice({
         microLamports: 15000,
       });
-      const instructions = [addPriorityFee];
+      const txn = new Transaction().add(addPriorityFee);
+
       const [lifafaPDA] = getLifafaPDA(id);
       const data = await program.account.lifafa.fetch(lifafaPDA);
       const mint = data.mintOfTokenBeingSent;
-      const vault = await getAssociatedTokenAddress(mint, wallet.publicKey);
-      if (vault === null) {
-        instructions.push(
+      const vault = getAssociatedTokenAddressSync(mint, lifafaPDA, true);
+      const vaultAccountInfo = await connection.getAccountInfo(vault);
+      if (vaultAccountInfo === null) {
+        console.log("No vault account info creating one");
+        txn.add(
           createAssociatedTokenAccountInstruction(
             wallet.publicKey,
             vault,
             lifafaPDA,
             mint,
-            TOKEN_PROGRAM_ID,
-            ASSOCIATED_TOKEN_PROGRAM_ID,
           ),
         );
       }
-      console.log("vault address", vault);
-      const instruction = await program.methods
-        .claimSplLifafa(new anchor.BN(id))
-        .accounts({
-          mint: mint,
-          vault: vault,
-          signer: wallet.publicKey,
-          tokenProgram: TOKEN_PROGRAM_ID,
-        })
-        .instruction();
-      instructions.push(instruction);
-      await processAndSend(instructions);
+      txn.add(
+        await program.methods
+          .claimSplLifafa(new anchor.BN(id))
+          .accounts({
+            mint: mint,
+            vault: vault,
+            signer: wallet.publicKey,
+            tokenProgram: TOKEN_PROGRAM_ID,
+          })
+          .instruction(),
+      );
+      await processAndSend(txn);
     } catch (error) {
       console.error("Transaction failed", error);
       throw error;
     }
   }
-
- 
 
   async function fetchLifafa(id: number) {
     if (!program) {
