@@ -24,7 +24,11 @@ import { PublicKey } from "@solana/web3.js";
 
 export const CreateLifafaComponent = () => {
   //   const { executeRawTransactionWithJobStatus } = useOkto();
-  const { program: lifafaProgram, createLifafa } = useLifafaProgram();
+  const {
+    program: lifafaProgram,
+    createLifafa,
+    claimLifafa,
+  } = useLifafaProgram();
   const [amount, setAmount] = useState(0);
   const [maxClaims, setMaxClaims] = useState<number | null>(null);
   const [time, setTime] = useState<Date | null>(null);
@@ -80,10 +84,18 @@ export const CreateLifafaComponent = () => {
         createLifafaData.ownerName,
         createLifafaData.desc,
         ClaimMode.Random,
-        new PublicKey(selectedToken.address)
+        new PublicKey(selectedToken.address),
       );
-      setEnvelopModalVisible(true)
-      setId(createLifafaData.id.toString())
+      setEnvelopModalVisible(true);
+      setId(createLifafaData.id.toString());
+    } catch (error) {
+      console.error("create Lifafa: ", error);
+    }
+  }
+
+  async function handleClaim() {
+    try {
+      const txnDataTmp = await claimLifafa(7620951291);
     } catch (error) {
       console.error("create Lifafa: ", error);
     }
@@ -126,6 +138,8 @@ export const CreateLifafaComponent = () => {
         disabled={isCreateDisabled}
       />
 
+      <CreateButton onPress={() => handleClaim()} disabled={false} />
+
       {/* Modals */}
       <EnvelopeModal
         amount={amount}
@@ -136,7 +150,9 @@ export const CreateLifafaComponent = () => {
         visible={envelopeModalVisible}
         setVisible={setEnvelopModalVisible}
         onCopyLink={() => {}}
-        onShare={() => {openDailect(id)}}
+        onShare={() => {
+          openDailect(id);
+        }}
       />
     </div>
   );
