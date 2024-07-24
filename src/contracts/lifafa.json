@@ -8,90 +8,6 @@
   },
   "instructions": [
     {
-      "name": "claim_sol_lifafa",
-      "discriminator": [
-        209,
-        19,
-        123,
-        104,
-        109,
-        66,
-        48,
-        71
-      ],
-      "accounts": [
-        {
-          "name": "lifafa",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  108,
-                  105,
-                  102,
-                  97,
-                  102,
-                  97
-                ]
-              },
-              {
-                "kind": "arg",
-                "path": "_id"
-              }
-            ]
-          }
-        },
-        {
-          "name": "user_claim",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  117,
-                  115,
-                  101,
-                  114,
-                  95,
-                  99,
-                  108,
-                  97,
-                  105,
-                  109
-                ]
-              },
-              {
-                "kind": "account",
-                "path": "lifafa"
-              },
-              {
-                "kind": "account",
-                "path": "signer"
-              }
-            ]
-          }
-        },
-        {
-          "name": "signer",
-          "writable": true,
-          "signer": true
-        },
-        {
-          "name": "system_program",
-          "address": "11111111111111111111111111111111"
-        }
-      ],
-      "args": [
-        {
-          "name": "_id",
-          "type": "u64"
-        }
-      ]
-    },
-    {
       "name": "claim_spl_lifafa",
       "discriminator": [
         119,
@@ -247,79 +163,6 @@
       ]
     },
     {
-      "name": "create_sol_lifafa",
-      "discriminator": [
-        204,
-        69,
-        222,
-        66,
-        135,
-        118,
-        64,
-        172
-      ],
-      "accounts": [
-        {
-          "name": "lifafa",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  108,
-                  105,
-                  102,
-                  97,
-                  102,
-                  97
-                ]
-              },
-              {
-                "kind": "arg",
-                "path": "id"
-              }
-            ]
-          }
-        },
-        {
-          "name": "signer",
-          "writable": true,
-          "signer": true
-        },
-        {
-          "name": "system_program",
-          "address": "11111111111111111111111111111111"
-        }
-      ],
-      "args": [
-        {
-          "name": "id",
-          "type": "u64"
-        },
-        {
-          "name": "amount",
-          "type": "u64"
-        },
-        {
-          "name": "time_limit_in_seconds",
-          "type": "i64"
-        },
-        {
-          "name": "max_claims",
-          "type": "u64"
-        },
-        {
-          "name": "owner_name",
-          "type": "string"
-        },
-        {
-          "name": "desc",
-          "type": "string"
-        }
-      ]
-    },
-    {
       "name": "create_spl_lifafa",
       "discriminator": [
         137,
@@ -460,55 +303,10 @@
         {
           "name": "desc",
           "type": "string"
-        }
-      ]
-    },
-    {
-      "name": "delete_sol_lifafa",
-      "discriminator": [
-        188,
-        252,
-        75,
-        30,
-        255,
-        168,
-        84,
-        151
-      ],
-      "accounts": [
-        {
-          "name": "lifafa",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  108,
-                  105,
-                  102,
-                  97,
-                  102,
-                  97
-                ]
-              },
-              {
-                "kind": "arg",
-                "path": "_id"
-              }
-            ]
-          }
         },
         {
-          "name": "signer",
-          "writable": true,
-          "signer": true
-        }
-      ],
-      "args": [
-        {
-          "name": "_id",
-          "type": "u64"
+          "name": "claim_mode",
+          "type": "u8"
         }
       ]
     },
@@ -688,21 +486,40 @@
     },
     {
       "code": 6004,
-      "name": "MaxClaimsLimitExceeded",
-      "msg": "Max claims limit exceeded"
-    },
-    {
-      "code": 6005,
       "name": "OwnerNameTooLong",
       "msg": "Owner name too long"
     },
     {
-      "code": 6006,
+      "code": 6005,
       "name": "DescriptionTooLong",
       "msg": "Description too long"
+    },
+    {
+      "code": 6006,
+      "name": "LifafaAlreadyExists",
+      "msg": "Lifafa Already Exists"
+    },
+    {
+      "code": 6007,
+      "name": "InvalidClaimMode",
+      "msg": "Invalid Claim Mode"
     }
   ],
   "types": [
+    {
+      "name": "ClaimMode",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Random"
+          },
+          {
+            "name": "Equal"
+          }
+        ]
+      }
+    },
     {
       "name": "Lifafa",
       "type": {
@@ -751,6 +568,14 @@
           {
             "name": "bump",
             "type": "u8"
+          },
+          {
+            "name": "claim_mode",
+            "type": {
+              "defined": {
+                "name": "ClaimMode"
+              }
+            }
           }
         ]
       }

@@ -22,6 +22,14 @@ import IDL from "@/contracts/lifafa.json";
 import { web3, BN } from "@coral-xyz/anchor";
 // import { getLifafaPDA } from "@/hooks/useLifafaProgram";
 // import { getAssetByAddress } from "@/data/solanaAssests";
+import base58 from "bs58";
+import {
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+  createAssociatedTokenAccountInstruction,
+  getAssociatedTokenAddress,
+  getOrCreateAssociatedTokenAccount,
+  TOKEN_PROGRAM_ID,
+} from "@solana/spl-token";
 
 const LIFAFA_PROGRAM_ID = (IDL as Lifafa).address;
 const lifafaProgramId = new PublicKey(LIFAFA_PROGRAM_ID);
@@ -86,10 +94,12 @@ export const GET = async (req: Request) => {
     // console.log("lifafa id", lifafaId);
     const lifafaData = await getLifafaData(lifafaId);
     // console.log(lifafaData);
-    const amountString = (lifafaData.amount / LAMPORTS_PER_SOL).toString();
+    const unit = 1e6; // LAMPORTS_PER_SOL
+    const amountString = (lifafaData.amount / unit).toString();
+    const tokenName = "SEND";
 
     const payload: ActionGetResponse = {
-      title: `🎉 Claim your share of ${amountString} SOL now!🚀✨`,
+      title: `🎉 Claim your share of ${amountString} ${tokenName} now!🚀✨`,
       description: lifafaData.desc,
       icon: new URL("/claim_lifafa_og.png", new URL(req.url).origin).toString(),
       label: `Claim Now`,
@@ -148,37 +158,50 @@ export const POST = async (req: Request) => {
     const connection = new Connection(
       process.env.NEXT_PUBLIC_SOLANA_RPC! || clusterApiUrl("devnet"),
     );
-    const wallet = new anchor.Wallet(anchor.web3.Keypair.generate());
+    const keypairWallet = anchor.web3.Keypair.generate();
+    const wallet = new anchor.Wallet(keypairWallet);
     const provider = new anchor.AnchorProvider(connection, wallet);
 
-    const program = new anchor.Program(
-      IDL as Lifafa,
-      provider,
-    ) as unknown as anchor.Program<Lifafa>;
+    const program = new anchor.Program(IDL as Lifafa, provider);
 
-    console.log(lifafaId)
+    const addPriorityFee = ComputeBudgetProgram.setComputeUnitPrice({
+      microLamports: 15000,
+    });
+    const instructions = [addPriorityFee];
+
     const [lifafaPDA] = getLifafaPDA(lifafaId);
-    const instruction = await program.methods
-      .claimSolLifafa(new anchor.BN(lifafaId))
-      .accounts({
-        // lifafa: lifafaPDA,
-        signer: account,
-        // systemProgram: web3.SystemProgram.programId,
-      })
-      .instruction();
+    const data = await program.account.lifafa.fetch(lifafaPDA);
 
-    // const instruction = SystemProgram.transfer({
-    //   fromPubkey: account,
-    //   toPubkey: wallet.publicKey,
-    //   lamports: 1000000,
-    // });
-
-    const txn = new Transaction().add(
-      ComputeBudgetProgram.setComputeUnitPrice({
-        microLamports: 1000,
-      }),
-      instruction,
+    const vault = await getAssociatedTokenAddress(
+      data.mintOfTokenBeingSent,
+      wallet.publicKey,
     );
+    if (vault === null) {
+      instructions.push(
+        createAssociatedTokenAccountInstruction(
+          wallet.publicKey,
+          vault,
+          lifafaPDA,
+          data.mintOfTokenBeingSent,
+          TOKEN_PROGRAM_ID,
+          ASSOCIATED_TOKEN_PROGRAM_ID,
+        ),
+      );
+    }
+
+    instructions.push(
+      await program.methods
+        .claimSplLifafa(new anchor.BN(lifafaId))
+        .accounts({
+          mint: data.mintOfTokenBeingSent,
+          vault: vault,
+          signer: wallet.publicKey,
+          tokenProgram: TOKEN_PROGRAM_ID,
+        })
+        .instruction(),
+    );
+
+    const txn = new Transaction().add(...instructions);
     txn.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
     txn.feePayer = account;
 
@@ -188,7 +211,7 @@ export const POST = async (req: Request) => {
         message: "Congrats! your rewards have been added to your wallet",
       },
       // no additional signers are required for this transaction
-      // signers: [],
+      // signers: [fee_wallet],
     });
 
     return new Response(JSON.stringify(payload), {

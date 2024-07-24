@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { useLifafaProgram } from "../hooks/useLifafaProgram";
+import { ClaimMode, useLifafaProgram } from "../hooks/useLifafaProgram";
 import { getRandomId } from "@/utils/random";
 // import { useAppContext } from "../providers/AppContextProvider";
 import { tokens } from "@/data/constants";
@@ -19,6 +19,7 @@ import { CreateButton } from "./CreateButton";
 import TokenBalance from "./TokenBalance";
 import { EnvelopeModal } from "./EnvelopeModal";
 import { openDailect } from "@/utils/share";
+import { PublicKey } from "@solana/web3.js";
 // import { useAnchorWallet, useWallet } from "@solana/wallet-adapter-react";
 
 export const CreateLifafaComponent = () => {
@@ -78,6 +79,8 @@ export const CreateLifafaComponent = () => {
         createLifafaData.maxClaims,
         createLifafaData.ownerName,
         createLifafaData.desc,
+        ClaimMode.Random,
+        new PublicKey(selectedToken.address)
       );
       setEnvelopModalVisible(true)
       setId(createLifafaData.id.toString())

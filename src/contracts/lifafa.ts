@@ -14,90 +14,6 @@ export type Lifafa = {
   },
   "instructions": [
     {
-      "name": "claimSolLifafa",
-      "discriminator": [
-        209,
-        19,
-        123,
-        104,
-        109,
-        66,
-        48,
-        71
-      ],
-      "accounts": [
-        {
-          "name": "lifafa",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  108,
-                  105,
-                  102,
-                  97,
-                  102,
-                  97
-                ]
-              },
-              {
-                "kind": "arg",
-                "path": "id"
-              }
-            ]
-          }
-        },
-        {
-          "name": "userClaim",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  117,
-                  115,
-                  101,
-                  114,
-                  95,
-                  99,
-                  108,
-                  97,
-                  105,
-                  109
-                ]
-              },
-              {
-                "kind": "account",
-                "path": "lifafa"
-              },
-              {
-                "kind": "account",
-                "path": "signer"
-              }
-            ]
-          }
-        },
-        {
-          "name": "signer",
-          "writable": true,
-          "signer": true
-        },
-        {
-          "name": "systemProgram",
-          "address": "11111111111111111111111111111111"
-        }
-      ],
-      "args": [
-        {
-          "name": "id",
-          "type": "u64"
-        }
-      ]
-    },
-    {
       "name": "claimSplLifafa",
       "discriminator": [
         119,
@@ -253,79 +169,6 @@ export type Lifafa = {
       ]
     },
     {
-      "name": "createSolLifafa",
-      "discriminator": [
-        204,
-        69,
-        222,
-        66,
-        135,
-        118,
-        64,
-        172
-      ],
-      "accounts": [
-        {
-          "name": "lifafa",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  108,
-                  105,
-                  102,
-                  97,
-                  102,
-                  97
-                ]
-              },
-              {
-                "kind": "arg",
-                "path": "id"
-              }
-            ]
-          }
-        },
-        {
-          "name": "signer",
-          "writable": true,
-          "signer": true
-        },
-        {
-          "name": "systemProgram",
-          "address": "11111111111111111111111111111111"
-        }
-      ],
-      "args": [
-        {
-          "name": "id",
-          "type": "u64"
-        },
-        {
-          "name": "amount",
-          "type": "u64"
-        },
-        {
-          "name": "timeLimitInSeconds",
-          "type": "i64"
-        },
-        {
-          "name": "maxClaims",
-          "type": "u64"
-        },
-        {
-          "name": "ownerName",
-          "type": "string"
-        },
-        {
-          "name": "desc",
-          "type": "string"
-        }
-      ]
-    },
-    {
       "name": "createSplLifafa",
       "discriminator": [
         137,
@@ -466,55 +309,10 @@ export type Lifafa = {
         {
           "name": "desc",
           "type": "string"
-        }
-      ]
-    },
-    {
-      "name": "deleteSolLifafa",
-      "discriminator": [
-        188,
-        252,
-        75,
-        30,
-        255,
-        168,
-        84,
-        151
-      ],
-      "accounts": [
-        {
-          "name": "lifafa",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  108,
-                  105,
-                  102,
-                  97,
-                  102,
-                  97
-                ]
-              },
-              {
-                "kind": "arg",
-                "path": "id"
-              }
-            ]
-          }
         },
         {
-          "name": "signer",
-          "writable": true,
-          "signer": true
-        }
-      ],
-      "args": [
-        {
-          "name": "id",
-          "type": "u64"
+          "name": "claimMode",
+          "type": "u8"
         }
       ]
     },
@@ -694,21 +492,40 @@ export type Lifafa = {
     },
     {
       "code": 6004,
-      "name": "maxClaimsLimitExceeded",
-      "msg": "Max claims limit exceeded"
-    },
-    {
-      "code": 6005,
       "name": "ownerNameTooLong",
       "msg": "Owner name too long"
     },
     {
-      "code": 6006,
+      "code": 6005,
       "name": "descriptionTooLong",
       "msg": "Description too long"
+    },
+    {
+      "code": 6006,
+      "name": "lifafaAlreadyExists",
+      "msg": "Lifafa Already Exists"
+    },
+    {
+      "code": 6007,
+      "name": "invalidClaimMode",
+      "msg": "Invalid Claim Mode"
     }
   ],
   "types": [
+    {
+      "name": "claimMode",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "random"
+          },
+          {
+            "name": "equal"
+          }
+        ]
+      }
+    },
     {
       "name": "lifafa",
       "type": {
@@ -757,6 +574,14 @@ export type Lifafa = {
           {
             "name": "bump",
             "type": "u8"
+          },
+          {
+            "name": "claimMode",
+            "type": {
+              "defined": {
+                "name": "claimMode"
+              }
+            }
           }
         ]
       }
