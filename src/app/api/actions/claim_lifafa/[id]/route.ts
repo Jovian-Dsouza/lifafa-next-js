@@ -157,29 +157,29 @@ export const POST = async (req: Request) => {
     const data = await program.account.lifafa.fetch(lifafaPDA);
     const mint = data.mintOfTokenBeingSent;
     const vault = getAssociatedTokenAddressSync(mint, lifafaPDA, true);
-    const vaultAccountInfo = await connection.getAccountInfo(vault);
-    if (vaultAccountInfo === null) {
-      console.log("No vault account info creating one");
+    const ata = getAssociatedTokenAddressSync(mint, account);
+    const accountInfo = await connection.getAccountInfo(ata);
+    if (accountInfo === null) {
+      // console.log("No ata account info creating one");
       txn.add(
         createAssociatedTokenAccountInstruction(
-          wallet.publicKey,
-          vault,
-          lifafaPDA,
+          account,
+          ata,
+          account,
           mint,
         ),
       );
     }
-    txn.add(
-      await program.methods
-        .claimSplLifafa(new anchor.BN(lifafaId))
-        .accounts({
-          mint: mint,
-          vault: vault,
-          signer: wallet.publicKey,
-          tokenProgram: TOKEN_PROGRAM_ID,
-        })
-        .instruction(),
-    );
+    const instruction = await program.methods
+      .claimSplLifafa(new anchor.BN(id))
+      .accounts({
+        mint: mint,
+        vault: vault,
+        signer: account,
+        tokenProgram: TOKEN_PROGRAM_ID,
+      })
+      .instruction();
+    txn.add(instruction);
 
     txn.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
     txn.feePayer = account;
