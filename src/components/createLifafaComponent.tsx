@@ -138,7 +138,7 @@ export const CreateLifafaComponent = () => {
         disabled={isCreateDisabled}
       />
 
-      <CreateButton onPress={() => handleClaim()} disabled={false} />
+      {/* <CreateButton onPress={() => handleClaim()} disabled={false} /> */}
 
       {/* Modals */}
       <EnvelopeModal

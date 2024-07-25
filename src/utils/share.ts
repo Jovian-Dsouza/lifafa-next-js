@@ -13,7 +13,7 @@ export const shareQuestionOnX = (content: string) => {
 };
 
 export const openDailect = (id: string) => {
-  const shareUrl = `https://dial.to/devnet?action=solana-action:https://www.lifafa.fun/api/actions/claim_lifafa/${id}`;
+  const shareUrl = `https://dial.to/action=solana-action:https://www.lifafa.fun/api/actions/claim_lifafa/${id}`;
   window.open(shareUrl, "_blank");
 };
 

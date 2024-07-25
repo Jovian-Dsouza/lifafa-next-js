@@ -158,29 +158,35 @@ export function useLifafaProgram() {
       const data = await program.account.lifafa.fetch(lifafaPDA);
       const mint = data.mintOfTokenBeingSent;
       const vault = getAssociatedTokenAddressSync(mint, lifafaPDA, true);
-      const vaultAccountInfo = await connection.getAccountInfo(vault);
-      if (vaultAccountInfo === null) {
-        console.log("No vault account info creating one");
+      const ata = getAssociatedTokenAddressSync(mint, provider.wallet.publicKey);
+      const accountInfo = await connection.getAccountInfo(ata);
+      if (accountInfo === null) {
+        console.log("No ata account info creating one");
         txn.add(
           createAssociatedTokenAccountInstruction(
             wallet.publicKey,
-            vault,
-            lifafaPDA,
+            ata,
+            wallet.publicKey,
             mint,
           ),
         );
+      } else {
+        console.log("Vault account is there");
       }
-      txn.add(
-        await program.methods
-          .claimSplLifafa(new anchor.BN(id))
-          .accounts({
-            mint: mint,
-            vault: vault,
-            signer: wallet.publicKey,
-            tokenProgram: TOKEN_PROGRAM_ID,
-          })
-          .instruction(),
-      );
+      console.log(`id: ${id}`)
+      console.log(`mint: ${mint.toString()}` )
+      console.log(`vault: ${vault.toString()}`);
+      console.log(`wallet: ${provider.wallet.publicKey.toString()}`);
+      const instruction = await program.methods
+        .claimSplLifafa(new anchor.BN(id))
+        .accounts({
+          mint: mint,
+          vault: vault,
+          signer: provider.wallet.publicKey,
+          tokenProgram: TOKEN_PROGRAM_ID,
+        })
+        .instruction();
+      txn.add(instruction);
       await processAndSend(txn);
     } catch (error) {
       console.error("Transaction failed", error);
