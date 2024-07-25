@@ -1,0 +1,44 @@
+datasource db {
+  provider = "postgresql" // or any other database provider you are using
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Lifafa {
+  id                       BigInt   @id @default(autoincrement())
+  creation_time            BigInt
+  time_limit               BigInt
+  owner                    String
+  owner_name               String
+  max_claims               BigInt
+  mint_of_token_being_sent String
+  amount                   BigInt
+  desc                     String
+  claim_mode               ClaimMode
+  user_claims              UserClaim[]
+}
+
+model User {
+  wallet_address String    @id @unique
+  user_claims    UserClaim[]
+}
+
+model UserClaim {
+  id             BigInt   @id @default(autoincrement())
+  userId         String
+  lifafaId       BigInt
+  claimed        Boolean
+  amount_claimed BigInt
+  user           User     @relation(fields: [userId], references: [wallet_address])
+  lifafa         Lifafa   @relation(fields: [lifafaId], references: [id])
+
+  @@unique([userId, lifafaId])
+}
+
+enum ClaimMode {
+  Random
+  Equal
+}
