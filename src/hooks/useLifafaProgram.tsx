@@ -158,7 +158,10 @@ export function useLifafaProgram() {
       const data = await program.account.lifafa.fetch(lifafaPDA);
       const mint = data.mintOfTokenBeingSent;
       const vault = getAssociatedTokenAddressSync(mint, lifafaPDA, true);
-      const ata = getAssociatedTokenAddressSync(mint, provider.wallet.publicKey);
+      const ata = getAssociatedTokenAddressSync(
+        mint,
+        provider.wallet.publicKey,
+      );
       const accountInfo = await connection.getAccountInfo(ata);
       if (accountInfo === null) {
         console.log("No ata account info creating one");
@@ -173,8 +176,8 @@ export function useLifafaProgram() {
       } else {
         console.log("Vault account is there");
       }
-      console.log(`id: ${id}`)
-      console.log(`mint: ${mint.toString()}` )
+      console.log(`id: ${id}`);
+      console.log(`mint: ${mint.toString()}`);
       console.log(`vault: ${vault.toString()}`);
       console.log(`wallet: ${provider.wallet.publicKey.toString()}`);
       const instruction = await program.methods
