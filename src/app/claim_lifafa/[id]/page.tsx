@@ -5,6 +5,9 @@ import dayjs from "dayjs";
 import { Container } from "@/components/Container";
 import Image from "next/image";
 import RedeemLifafa from "../../../../public/claim_lifafa_og.png";
+import { useLifafaProgram } from "@/hooks/useLifafaProgram";
+import { getTokenByAddress } from "@/data/constants";
+import { LifafaData } from "@/Types";
 
 const LifafaStatus = ({
   numDaysLeft,
@@ -29,11 +32,13 @@ const LifafaStatus = ({
       <button
         disabled={disabled}
         className={`p-4 w-full rounded-full mt-4 ${
-          disabled ? "bg-gray-400" : "bg-black"
+          disabled
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-black cursor-pointer"
         }`}
         onClick={onOpen}
       >
-        <span className="text-white text-center">Open Lifafa</span>
+        <span className="text-white text-center">Claim Lifafa</span>
       </button>
     </div>
   );
@@ -66,84 +71,68 @@ const LifafaActions = () => {
   );
 };
 
-const Redeem = () => {
-  // const { lifafaProgram, claimLifafa, fetchLifafa } = useLifafaProgram();
-  const [id, setId] = useState();
+const Redeem = ({ params }: { params: { id: string } }) => {
+  const lifafaId = params.id;
+  const { claimLifafa, fetchLifafa, program } = useLifafaProgram();
   const [isOpen, setIsOpen] = useState(false);
-  // const [lifafaData, setLifafaData] = useState();
-  const amount = 2;
-  const disabled = false;
-
-  const lifafaData = {
-    id: id,
-    amount: 0,
-    claims: 1,
-    numDaysLeft: 1,
-    ownerName: "jovian",
-    desc: "test",
-    tokenSymbol: "SOL",
-    tokenIcon: "icons",
-  };
+  const [lifafaData, setLifafaData] = useState<LifafaData | null>(null);
+  const disabled = useMemo(() => !program, [program]);
 
   async function getLifafaData() {
-    // if (!id) {
-    //   setLifafaData(null);
-    // }
-    // try {
-    //   const pdaData = await fetchLifafa(id);
-    //   const remainingClaims = pdaData.maxClaims - pdaData.claimed.length;
-    //   const expiryTime = dayjs.unix(
-    //     Number(pdaData.creationTime) + Number(pdaData.timeLimit),
-    //   );
-    //   const daysLeft = expiryTime.diff(dayjs(), "day");
-    //   const lifafaDataTmp = {
-    //     id: id,
-    //     amount: Number(pdaData.amount / LAMPORTS_PER_SOL),
-    //     claims: remainingClaims,
-    //     numDaysLeft: daysLeft,
-    //     ownerName: pdaData.ownerName,
-    //     desc: pdaData.desc,
-    //     tokenSymbol: "SOL",
-    //     tokenIcon: images.tokens.sol,
-    //   };
-    //   setLifafaData(lifafaDataTmp);
-    // } catch (error) {
-    //   console.log("getLifafaData: ", error);
-    //   setLifafaData(null);
-    // }
+    if (!lifafaId) {
+      setLifafaData(null);
+    }
+    try {
+      const id = Number(lifafaId);
+      const pdaData = await fetchLifafa(id);
+      if (!pdaData) {
+        return;
+      }
+      const mintToken = getTokenByAddress(
+        pdaData.mintOfTokenBeingSent.toString(),
+      );
+      if (!mintToken) {
+        return;
+      }
+      const remainingClaims = pdaData.maxClaims - pdaData.claims;
+      const expiryTime = dayjs.unix(
+        Number(pdaData.creationTime) + Number(pdaData.timeLimit),
+      );
+      const daysLeft = expiryTime.diff(dayjs(), "day");
+      const lifafaDataTmp = {
+        id: id,
+        amount: Number(pdaData.amount / (10 * mintToken.decimals)),
+        claims: remainingClaims,
+        numDaysLeft: daysLeft,
+        ownerName: pdaData.ownerName,
+        desc: pdaData.desc,
+        tokenSymbol: mintToken.symbol,
+        tokenIcon: mintToken.icon,
+      };
+      setLifafaData(lifafaDataTmp);
+    } catch (error) {
+      console.log("getLifafaData: ", error);
+      setLifafaData(null);
+    }
   }
 
   async function handleClaim() {
-    // setTransactionModalVisible(true);
-    // try {
-    //   const balance = await getBalance(lifafaData.tokenSymbol);
-    //   const txnDataTmp = await claimLifafa(id);
-    //   setTxnData(txnDataTmp);
-    //   setInitialBalance(Number(balance));
-    // } catch (error) {
-    //   console.error("create Lifafa: ", error);
-    // }
+    try {
+      //TODO check if user already claimed
+      await claimLifafa(Number(lifafaId));
+      //TODO store the amount claimed
+    } catch (error) {
+      console.error("create Lifafa: ", error);
+    }
   }
 
-  // useEffect(() => {
-  //   if (!isLoggedIn) {
-  //     navigation.push("/login");
-  //   }
-  // }, [isLoggedIn]);
-
-  // useEffect(() => {
-  //   if (route.params && route.params.id) {
-  //     console.log("id = ", route.params.id);
-  //     setId(route.params.id);
-  //   }
-  //   console.log("Id: ", id);
-  // }, [route]);
-
-  // useEffect(() => {
-  //   if (wallet && id) {
-  //     getLifafaData();
-  //   }
-  // }, [id, wallet]);
+  useEffect(() => {
+    if (!program) {
+      return;
+    }
+    getLifafaData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [program]);
 
   if (!lifafaData) {
     return (
@@ -169,7 +158,7 @@ const Redeem = () => {
             From {lifafaData.ownerName}
           </span>
           <span className="text-2xl text-black font-bold">
-            Best wishes, hope you win!
+            {lifafaData.desc}
           </span>
 
           {isOpen ? (

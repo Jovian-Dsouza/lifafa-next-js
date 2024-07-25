@@ -48,3 +48,7 @@ export interface Token {
   decimals: number;
   address: string;
 }
+
+export function getTokenByAddress(address: string): Token | undefined {
+  return tokens.find(token => token.address === address);
+}
