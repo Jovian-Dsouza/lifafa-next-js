@@ -78,7 +78,7 @@ export const CreateLifafaComponent = () => {
     try {
       const txnDataTmp = await createLifafa(
         createLifafaData.id,
-        createLifafaData.amount,
+        createLifafaData.amount * 10 ** selectedToken.decimals,
         createLifafaData.timeleft,
         createLifafaData.maxClaims,
         createLifafaData.ownerName,
