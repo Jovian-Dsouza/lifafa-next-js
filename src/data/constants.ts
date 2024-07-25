@@ -11,6 +11,15 @@ export const tokens: Token[] = [
   //   address: "",
   // },
   {
+    name: "USDC",
+    symbol: "USDC",
+    icon: images.tokens.usdc,
+    blockchain: "SOL",
+    blockchainIcon: images.tokens.sol,
+    decimals: 6,
+    address: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+  },
+  {
     name: "SEND",
     symbol: "SEND",
     icon: images.tokens.send,
