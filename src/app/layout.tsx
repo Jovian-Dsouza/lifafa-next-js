@@ -13,6 +13,9 @@ import { ThemeModeToggle } from "@/components/theme-mode-toggle";
 import { siteConfig } from "@/config/site";
 import { ReactQueryProvider } from "@/providers/react-query-provider";
 import { SolanaProvider, WalletButton } from "@/providers/solana-provider";
+import { AuthProvider } from "@/providers/auth-provider";
+import { CustomWalletProvider } from "@/providers/custom-wallet-provider";
+import { RecoilProvider } from "@/providers/recoil-privoder";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -38,44 +41,50 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <ReactQueryProvider>
             <SolanaProvider>
-              <div className="flex min-h-screen flex-col">
-                <header className="container z-40 bg-background">
-                  <div className="flex h-20 items-center justify-between py-10 ">
-                    <MainNav items={marketingConfig.mainNav} />
-                    <div className="flex gap-8">
-                      <Link href="/">
-                        {" "}
-                        <h1 className="font-medium">Home</h1>{" "}
-                      </Link>
-                      <Link href="/dashboard">
-                        {" "}
-                        <h1 className="font-medium">Dashboard</h1>{" "}
-                      </Link>
+              <RecoilProvider>
+                <CustomWalletProvider>
+                  <AuthProvider>
+                    <div className="flex min-h-screen flex-col">
+                      <header className="container z-40 bg-background">
+                        <div className="flex h-20 items-center justify-between py-10 ">
+                          <MainNav items={marketingConfig.mainNav} />
+                          <div className="flex gap-8">
+                            <Link href="/">
+                              {" "}
+                              <h1 className="font-medium">Home</h1>{" "}
+                            </Link>
+                            <Link href="/dashboard">
+                              {" "}
+                              <h1 className="font-medium">Dashboard</h1>{" "}
+                            </Link>
+                          </div>
+                          <nav className="flex items-center gap-2">
+                            <WalletButton />
+
+                            <ThemeModeToggle />
+                          </nav>
+                        </div>
+                      </header>
+
+                      <div
+                        className={cn(
+                          "before:absolute z-[-1] before:h-[300px] before:w-full before:translate-x-1/4 before:translate-y-52 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-5 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]",
+                        )}
+                      ></div>
+
+                      <main
+                        className={
+                          "flex-1 space-y-10  mx-auto text-black my-auto container flex"
+                        }
+                      >
+                        {children}
+                      </main>
+
+                      <SiteFooter />
                     </div>
-                    <nav className="flex items-center gap-2">
-                      <WalletButton />
-
-                      <ThemeModeToggle />
-                    </nav>
-                  </div>
-                </header>
-
-                <div
-                  className={cn(
-                    "before:absolute z-[-1] before:h-[300px] before:w-full before:translate-x-1/4 before:translate-y-52 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-5 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]",
-                  )}
-                ></div>
-
-                <main
-                  className={
-                    "flex-1 space-y-10  mx-auto text-black my-auto container flex"
-                  }
-                >
-                  {children}
-                </main>
-
-                <SiteFooter />
-              </div>
+                  </AuthProvider>
+                </CustomWalletProvider>
+              </RecoilProvider>
             </SolanaProvider>
           </ReactQueryProvider>
         </ThemeProvider>

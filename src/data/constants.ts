@@ -1,5 +1,7 @@
 import { images } from "./assets";
 
+export const SIGN_MESSAGE = "Sign into Lifafa";
+
 export const tokens: Token[] = [
   // {
   //   name: "SOL",
