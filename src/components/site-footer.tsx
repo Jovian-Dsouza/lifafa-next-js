@@ -28,9 +28,9 @@ export function SiteFooter({ className }: React.HTMLAttributes<HTMLElement>) {
             .
           </p>
         </div>
-        <nav className="flex items-center gap-2">
+        {/* <nav className="flex items-center gap-2">
           <ThemeModeToggle />
-        </nav>
+        </nav> */}
       </div>
     </footer>
   );

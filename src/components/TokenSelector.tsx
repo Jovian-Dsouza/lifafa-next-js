@@ -42,7 +42,7 @@ export const TokenSelector = ({
           className="flex items-center justify-center space-x-1"
         >
           <span className="font-semibold">{token.symbol}</span>
-          <ChevronDownIcon className="h-4 w-4 text-gray-800" />
+          {/* <ChevronDownIcon className="h-4 w-4 text-gray-800" /> */}
         </button>
         <span className="text-xs text-gray-500">on {token.blockchain}</span>
       </div>

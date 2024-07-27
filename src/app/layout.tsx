@@ -48,7 +48,7 @@ export default function RootLayout({
                       <header className="container z-40 bg-background">
                         <div className="flex h-20 items-center justify-between py-10 ">
                           <MainNav items={marketingConfig.mainNav} />
-                          <div className="flex gap-8">
+                          {/* <div className="flex gap-8">
                             <Link href="/">
                               {" "}
                               <h1 className="font-medium">Home</h1>{" "}
@@ -57,7 +57,7 @@ export default function RootLayout({
                               {" "}
                               <h1 className="font-medium">Dashboard</h1>{" "}
                             </Link>
-                          </div>
+                          </div> */}
                           <nav className="flex items-center gap-2">
                             <WalletButton />
 
