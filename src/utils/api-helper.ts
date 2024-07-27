@@ -17,12 +17,6 @@ export const signinUser = async (
   wallet_address: string,
   signature: any,
 ): Promise<string | null> => {
-  console.log(
-    JSON.stringify({
-      signature,
-      wallet_address: wallet_address,
-    }),
-  );
   const response = await axios.post(
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/login`,
     {
@@ -35,4 +29,33 @@ export const signinUser = async (
     return response.data.token;
   }
   return null;
+};
+
+export const saveLifafa = async (lifafaData: {
+  id: string;
+  creation_time: string;
+  time_limit: string;
+  owner: string;
+  owner_name: string;
+  max_claims: string;
+  mint_of_token_being_sent: string;
+  amount: string;
+  desc: string;
+  claim_mode: "Random" | "Equal";
+  wallet_address: string;
+}): Promise<string | null> => {
+  try {
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/lifafa`,
+      lifafaData,
+    );
+
+    if (response && response.status === 200) {
+      return response.data.message;
+    }
+    return null;
+  } catch (error) {
+    console.error("Failed to create lifafa:", error);
+    return null;
+  }
 };

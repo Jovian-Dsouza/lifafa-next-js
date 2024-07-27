@@ -20,7 +20,18 @@ import TokenBalance from "./TokenBalance";
 import { EnvelopeModal } from "./EnvelopeModal";
 import { openDailect } from "@/utils/share";
 import { PublicKey } from "@solana/web3.js";
+import { saveLifafa } from "@/utils/api-helper";
+import { useCustomWallet } from "@/providers/custom-wallet-provider";
 // import { useAnchorWallet, useWallet } from "@solana/wallet-adapter-react";
+
+const shortenWalletAddress = (address: string): string => {
+  if (address.length <= 8) {
+    return "lifafa";
+  }
+  const start = address.slice(0, 4);
+  const end = address.slice(-4);
+  return `${start}...${end}`;
+};
 
 export const CreateLifafaComponent = () => {
   //   const { executeRawTransactionWithJobStatus } = useOkto();
@@ -39,6 +50,7 @@ export const CreateLifafaComponent = () => {
   //   const { user } = useAppContext();
   const [selectedToken, setSelectedToken] = useState(tokens[0]);
   const [txnData, setTxnData] = useState();
+  const {walletAddress} = useCustomWallet();
 
   //   const fee = useMemo(() => {
   //     if (txnData) {
@@ -88,6 +100,19 @@ export const CreateLifafaComponent = () => {
       );
       setEnvelopModalVisible(true);
       setId(createLifafaData.id.toString());
+      await saveLifafa({
+        id: createLifafaData.id.toString(),
+        creation_time: '', //current timestamp
+        time_limit: createLifafaData.timeleft.toString(),
+        owner: walletAddress? walletAddress: '',
+        owner_name: shortenWalletAddress(walletAddress? walletAddress: ''),
+        max_claims: createLifafaData.maxClaims.toString(),
+        mint_of_token_being_sent: walletAddress? walletAddress: '',
+        amount: createLifafaData.amount.toString(),
+        desc: createLifafaData.desc.toString(),
+        claim_mode: "Random",
+        wallet_address: walletAddress? walletAddress: ''
+      });
     } catch (error) {
       console.error("create Lifafa: ", error);
     }
