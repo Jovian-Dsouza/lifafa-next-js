@@ -8,7 +8,7 @@ generator client {
 }
 
 model Lifafa {
-  id                       BigInt   @id @default(autoincrement())
+  id                       BigInt   @id @unique
   creation_time            BigInt
   time_limit               BigInt
   owner                    String
@@ -19,23 +19,26 @@ model Lifafa {
   desc                     String
   claim_mode               ClaimMode
   user_claims              UserClaim[]
+  wallet_address           String
+  user                     User     @relation(fields: [wallet_address], references: [wallet_address])
 }
 
 model User {
   wallet_address String    @id @unique
   user_claims    UserClaim[]
+  lifafas        Lifafa[]
 }
 
 model UserClaim {
   id             BigInt   @id @default(autoincrement())
-  userId         String
+  wallet_address String
   lifafaId       BigInt
   claimed        Boolean
   amount_claimed BigInt
-  user           User     @relation(fields: [userId], references: [wallet_address])
+  user           User     @relation(fields: [wallet_address], references: [wallet_address])
   lifafa         Lifafa   @relation(fields: [lifafaId], references: [id])
 
-  @@unique([userId, lifafaId])
+  @@unique([wallet_address, lifafaId])
 }
 
 enum ClaimMode {

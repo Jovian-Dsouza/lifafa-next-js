@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import jwt from "jsonwebtoken";
 import { SIGN_MESSAGE } from "@/data/constants";
 import { createJwtToken, verifySignature } from "@/utils/jwt";
 
