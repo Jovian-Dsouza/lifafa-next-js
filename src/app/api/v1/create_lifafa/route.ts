@@ -21,6 +21,9 @@ const CreateLifafaBody = z.object({
 export async function POST(req: NextRequest) {
   try {
     const lifafaData = CreateLifafaBody.parse(await req.json());
+    // const cookies = req.cookies;
+    // const walletAddress = cookies.get("wallet_address");
+    // console.log(walletAddress)
     // const lifafaData = await req.json();
     // console.log(lifafaData)
 

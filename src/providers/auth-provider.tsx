@@ -31,6 +31,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         return;
       }
       const token = await signinUser(walletAddress, signature);
+      // console.log("token", token)
       if (token) {
         storeAuthDetails({
           token,
