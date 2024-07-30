@@ -32,8 +32,8 @@ export default function CreateMarketPage() {
   };
 
   return (
-    <div className="w-full flex flex-col sm:flex-row items-center justify-center bg-background gap-[3rem] sm:gap-[14rem] mt-5">
-      <Image src={HeroImage} alt="envelop-image" className="w-auto h-[18rem] sm:h-[30rem]" />
+    <div className="w-full flex flex-col md:flex-row items-center justify-center bg-background gap-[3rem] lg:gap-[8rem] mt-5">
+      <Image src={HeroImage} alt="envelop-image" className="w-[80%] md:w-[50%] h-auto" />
       <CreateLifafaComponent />
     </div>
   );
