@@ -16,6 +16,10 @@ import { SolanaProvider, WalletButton } from "@/providers/solana-provider";
 import { AuthProvider } from "@/providers/auth-provider";
 import { CustomWalletProvider } from "@/providers/custom-wallet-provider";
 import { RecoilProvider } from "@/providers/recoil-privoder";
+import { OktoAuthProvider } from "@/providers/okto-auth-provider";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./api/auth/[...nextauth]/route";
+import OktoAuthButton from "@/components/OktoAuthButton";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,11 +34,12 @@ export const metadata: Metadata = {
   description: siteConfig.description,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await getServerSession(authOptions);
   return (
     <html lang="en">
       <body className={inter.className}>
@@ -43,7 +48,8 @@ export default function RootLayout({
             <SolanaProvider>
               <RecoilProvider>
                 <CustomWalletProvider>
-                  <AuthProvider>
+                  {/* <AuthProvider> */}
+                  <OktoAuthProvider session={session}>
                     <div className="flex min-h-screen flex-col">
                       <header className="container z-40 bg-background">
                         <div className="flex h-20 items-center justify-between py-10 ">
@@ -59,7 +65,8 @@ export default function RootLayout({
                             </Link>
                           </div> */}
                           <nav className="flex items-center gap-2">
-                            <WalletButton />
+                            {/* <WalletButton /> */}
+                            <OktoAuthButton />
 
                             <ThemeModeToggle />
                           </nav>
@@ -82,7 +89,8 @@ export default function RootLayout({
 
                       <SiteFooter />
                     </div>
-                  </AuthProvider>
+                  </OktoAuthProvider>
+                  {/* </AuthProvider> */}
                 </CustomWalletProvider>
               </RecoilProvider>
             </SolanaProvider>

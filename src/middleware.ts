@@ -9,7 +9,10 @@ const jwtConfig = {
 export async function middleware(request: NextRequest) {
   const url = new URL(request.url);
   try {
-    if (url.pathname.startsWith("/api/v1/login")) {
+    if (
+      url.pathname.startsWith("/api/v1/login") ||
+      url.pathname.startsWith("/api/auth")
+    ) {
       return NextResponse.next();
     }
 
