@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { ClaimMode, useLifafaProgram } from "../hooks/useLifafaProgram";
 import { getRandomId } from "@/utils/random";
 // import { useAppContext } from "../providers/AppContextProvider";
@@ -22,6 +22,8 @@ import { openDailect } from "@/utils/share";
 import { PublicKey } from "@solana/web3.js";
 import { saveLifafa } from "@/utils/api-helper";
 import { useCustomWallet } from "@/providers/custom-wallet-provider";
+import { useOktoWallet } from "@/providers/custom-okto-wallet-provider";
+import { OktoContextType, useOkto } from "okto-sdk-react";
 // import { useAnchorWallet, useWallet } from "@solana/wallet-adapter-react";
 
 const shortenWalletAddress = (address: string): string => {
@@ -34,12 +36,17 @@ const shortenWalletAddress = (address: string): string => {
 };
 
 export const CreateLifafaComponent = () => {
-  //   const { executeRawTransactionWithJobStatus } = useOkto();
+  const { executeRawTransactionWithJobStatus, orderHistory, isLoggedIn } =
+    useOkto() as OktoContextType;
+  const [walletPublicKey, setWalletPublicKey] = useState<PublicKey | null>(
+    null,
+  );
+  const { getWalletForSelectedCluster } = useOktoWallet();
   const {
     program: lifafaProgram,
     createLifafa,
     claimLifafa,
-  } = useLifafaProgram();
+  } = useLifafaProgram(walletPublicKey);
   const [amount, setAmount] = useState(0);
   const [maxClaims, setMaxClaims] = useState<number | null>(null);
   const [time, setTime] = useState<Date | null>(null);
@@ -50,14 +57,23 @@ export const CreateLifafaComponent = () => {
   //   const { user } = useAppContext();
   const [selectedToken, setSelectedToken] = useState(tokens[0]);
   const [txnData, setTxnData] = useState();
-  const {walletAddress} = useCustomWallet();
+  // const {walletAddress} = useCustomWallet();
 
-  //   const fee = useMemo(() => {
-  //     if (txnData) {
-  //       return txnData.fee;
-  //     }
-  //     return "0";
-  //   }, [txnData]);
+  useEffect(() => {
+    if (isLoggedIn) {
+      (async () => {
+        const walletPublicKeyTemp = await getWalletForSelectedCluster();
+        // console.log("wallet public key", walletPublicKeyTemp.address);
+        if (walletPublicKeyTemp && walletPublicKeyTemp.address) {
+          setWalletPublicKey(new PublicKey(walletPublicKeyTemp.address));
+        }
+      })();
+    }
+  }, [isLoggedIn]);
+
+  useEffect(() => {
+    console.log("wallet public key", walletPublicKey?.toString());
+  }, [walletPublicKey]);
 
   const timeLeft = useMemo(() => {
     if (time) {
@@ -87,8 +103,9 @@ export const CreateLifafaComponent = () => {
       desc: desc,
     };
     console.log("CreateLifafaData: ", createLifafaData);
+    console.log("walletpublickey", walletPublicKey);
     try {
-      const txnDataTmp = await createLifafa(
+      const rawTxn = await createLifafa(
         createLifafaData.id,
         createLifafaData.amount * 10 ** selectedToken.decimals,
         createLifafaData.timeleft,
@@ -97,22 +114,26 @@ export const CreateLifafaComponent = () => {
         createLifafaData.desc,
         ClaimMode.Random,
         new PublicKey(selectedToken.address),
+        walletPublicKey
       );
-      setEnvelopModalVisible(true);
-      setId(createLifafaData.id.toString());
-      await saveLifafa({
-        id: createLifafaData.id.toString(),
-        creation_time: '', //current timestamp
-        time_limit: createLifafaData.timeleft.toString(),
-        owner: walletAddress? walletAddress: '',
-        owner_name: shortenWalletAddress(walletAddress? walletAddress: ''),
-        max_claims: createLifafaData.maxClaims.toString(),
-        mint_of_token_being_sent: walletAddress? walletAddress: '',
-        amount: createLifafaData.amount.toString(),
-        desc: createLifafaData.desc.toString(),
-        claim_mode: "Random",
-        wallet_address: walletAddress? walletAddress: ''
-      });
+      console.log("raw Txn", rawTxn);
+      const jobStatus = await executeRawTransactionWithJobStatus(rawTxn)
+      console.log(jobStatus)
+      // setEnvelopModalVisible(true);
+      // setId(createLifafaData.id.toString());
+      // await saveLifafa({
+      //   id: createLifafaData.id.toString(),
+      //   creation_time: '', //current timestamp
+      //   time_limit: createLifafaData.timeleft.toString(),
+      //   owner: walletAddress? walletAddress: '',
+      //   owner_name: shortenWalletAddress(walletAddress? walletAddress: ''),
+      //   max_claims: createLifafaData.maxClaims.toString(),
+      //   mint_of_token_being_sent: walletAddress? walletAddress: '',
+      //   amount: createLifafaData.amount.toString(),
+      //   desc: createLifafaData.desc.toString(),
+      //   claim_mode: "Random",
+      //   wallet_address: walletAddress? walletAddress: ''
+      // });
     } catch (error) {
       console.error("create Lifafa: ", error);
     }
