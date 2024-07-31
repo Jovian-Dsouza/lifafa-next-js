@@ -13,12 +13,10 @@ import { ThemeModeToggle } from "@/components/theme-mode-toggle";
 import { siteConfig } from "@/config/site";
 import { ReactQueryProvider } from "@/providers/react-query-provider";
 import { SolanaProvider, WalletButton } from "@/providers/solana-provider";
-import { AuthProvider } from "@/providers/auth-provider";
-import { CustomWalletProvider } from "@/providers/custom-wallet-provider";
 import { RecoilProvider } from "@/providers/recoil-privoder";
 import { OktoAuthProvider } from "@/providers/okto-auth-provider";
 import { getServerSession } from "next-auth";
-import { authOptions } from "./api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/authOptions";
 import OktoAuthButton from "@/components/OktoAuthButton";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -47,8 +45,6 @@ export default async function RootLayout({
           <ReactQueryProvider>
             <SolanaProvider>
               <RecoilProvider>
-                <CustomWalletProvider>
-                  {/* <AuthProvider> */}
                   <OktoAuthProvider session={session}>
                     <div className="flex min-h-screen flex-col">
                       <header className="container z-40 bg-background">
@@ -90,8 +86,6 @@ export default async function RootLayout({
                       <SiteFooter />
                     </div>
                   </OktoAuthProvider>
-                  {/* </AuthProvider> */}
-                </CustomWalletProvider>
               </RecoilProvider>
             </SolanaProvider>
           </ReactQueryProvider>

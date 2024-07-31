@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
-import { LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
 import dayjs from "dayjs";
 import { Container } from "@/components/Container";
 import Image from "next/image";
@@ -73,7 +73,7 @@ const LifafaActions = () => {
 
 const Redeem = ({ params }: { params: { id: string } }) => {
   const lifafaId = params.id;
-  const { claimLifafa, fetchLifafa, program } = useLifafaProgram();
+  const { claimLifafa, fetchLifafa, program } = useLifafaProgram(new PublicKey(""));
   const [isOpen, setIsOpen] = useState(false);
   const [lifafaData, setLifafaData] = useState<LifafaData | null>(null);
   const disabled = useMemo(() => !program, [program]);

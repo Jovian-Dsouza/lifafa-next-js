@@ -20,8 +20,6 @@ import TokenBalance from "./TokenBalance";
 import { EnvelopeModal } from "./EnvelopeModal";
 import { openDailect } from "@/utils/share";
 import { PublicKey } from "@solana/web3.js";
-import { saveLifafa } from "@/utils/api-helper";
-import { useCustomWallet } from "@/providers/custom-wallet-provider";
 import { useOktoWallet } from "@/providers/custom-okto-wallet-provider";
 import { OktoContextType, useOkto } from "okto-sdk-react";
 // import { useAnchorWallet, useWallet } from "@solana/wallet-adapter-react";
