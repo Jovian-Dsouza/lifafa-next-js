@@ -14,7 +14,7 @@ import {
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 import { solanaTransaction } from "@/utils/solana-okto";
-import { useOktoWallet } from "@/providers/custom-okto-wallet-provider";
+// import { useOktoWallet } from "@/providers/custom-okto-wallet-provider";
 
 export const LIFAFA_PROGRAM_ID = (IDL as Lifafa).address;
 const lifafaProgramId = new PublicKey(LIFAFA_PROGRAM_ID);
@@ -37,7 +37,7 @@ export enum ClaimMode {
 export function useLifafaProgram(
   walletPublicKey: anchor.web3.PublicKey | null,
 ) {
-  const { network } = useOktoWallet();
+  // const { network } = useOktoWallet();
   const { connection } = useConnection();
   const anchorWallet = useAnchorWallet();
 

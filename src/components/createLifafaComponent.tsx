@@ -20,8 +20,8 @@ import TokenBalance from "./TokenBalance";
 import { EnvelopeModal } from "./EnvelopeModal";
 import { openDailect } from "@/utils/share";
 import { PublicKey } from "@solana/web3.js";
-import { useOktoWallet } from "@/providers/custom-okto-wallet-provider";
-import { OktoContextType, useOkto } from "okto-sdk-react";
+// import { useOktoWallet } from "@/providers/custom-okto-wallet-provider";
+// import { OktoContextType, useOkto } from "okto-sdk-react";
 import { storeLifafa } from "@/utils/firebaseHelpers";
 // import { useAnchorWallet, useWallet } from "@solana/wallet-adapter-react";
 
@@ -35,12 +35,12 @@ const shortenWalletAddress = (address: string): string => {
 };
 
 export const CreateLifafaComponent = () => {
-  const { executeRawTransactionWithJobStatus, orderHistory, isLoggedIn } =
-    useOkto() as OktoContextType;
+  // const { executeRawTransactionWithJobStatus, orderHistory, isLoggedIn } =
+  //   useOkto() as OktoContextType;
   const [walletPublicKey, setWalletPublicKey] = useState<PublicKey | null>(
     null,
   );
-  const { getWalletForSelectedCluster } = useOktoWallet();
+  // const { getWalletForSelectedCluster } = useOktoWallet();
   const {
     program: lifafaProgram,
     createLifafa,
@@ -58,21 +58,21 @@ export const CreateLifafaComponent = () => {
   const [txnData, setTxnData] = useState();
   // const {walletAddress} = useCustomWallet();
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      (async () => {
-        const walletPublicKeyTemp = await getWalletForSelectedCluster();
-        // console.log("wallet public key", walletPublicKeyTemp.address);
-        if (walletPublicKeyTemp && walletPublicKeyTemp.address) {
-          setWalletPublicKey(new PublicKey(walletPublicKeyTemp.address));
-        }
-      })();
-    }
-  }, [isLoggedIn]);
+  // useEffect(() => {
+  //   if (isLoggedIn) {
+  //     (async () => {
+  //       const walletPublicKeyTemp = await getWalletForSelectedCluster();
+  //       // console.log("wallet public key", walletPublicKeyTemp.address);
+  //       if (walletPublicKeyTemp && walletPublicKeyTemp.address) {
+  //         setWalletPublicKey(new PublicKey(walletPublicKeyTemp.address));
+  //       }
+  //     })();
+  //   }
+  // }, [isLoggedIn]);
 
-  useEffect(() => {
-    console.log("wallet public key", walletPublicKey?.toString());
-  }, [walletPublicKey]);
+  // useEffect(() => {
+  //   console.log("wallet public key", walletPublicKey?.toString());
+  // }, [walletPublicKey]);
 
   const timeLeft = useMemo(() => {
     if (time) {
@@ -119,8 +119,8 @@ export const CreateLifafaComponent = () => {
         walletPublicKey
       );
       console.log("raw Txn", rawTxn);
-      const jobStatus = await executeRawTransactionWithJobStatus(rawTxn)
-      console.log(jobStatus)
+      // const jobStatus = await executeRawTransactionWithJobStatus(rawTxn)
+      // console.log(jobStatus)
 
       // storeLifafa(walletPublicKey.toString(), id, transaction_hash, "created");
       // setEnvelopModalVisible(true);

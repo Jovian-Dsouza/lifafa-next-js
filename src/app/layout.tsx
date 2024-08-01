@@ -45,7 +45,7 @@ export default async function RootLayout({
           <ReactQueryProvider>
             <SolanaProvider>
               <RecoilProvider>
-                <OktoAuthProvider session={session}>
+                {/* <OktoAuthProvider session={session}> */}
                   <div className="flex min-h-screen flex-col">
                     <header className="container z-40 bg-background">
                       <div className="flex h-20 items-center justify-between py-10 ">
@@ -61,8 +61,8 @@ export default async function RootLayout({
                             </Link>
                           </div> */}
                         <nav className="flex items-center gap-2">
-                          {/* <WalletButton /> */}
-                          <OktoAuthButton />
+                          <WalletButton />
+                          {/* <OktoAuthButton /> */}
 
                           <ThemeModeToggle />
                         </nav>
@@ -85,7 +85,7 @@ export default async function RootLayout({
 
                     <SiteFooter />
                   </div>
-                </OktoAuthProvider>
+                {/* </OktoAuthProvider> */}
               </RecoilProvider>
             </SolanaProvider>
           </ReactQueryProvider>
