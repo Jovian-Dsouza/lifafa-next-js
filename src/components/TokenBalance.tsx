@@ -11,8 +11,13 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({ token }) => {
   const [balance, setBalance] = useState(0);
 
   async function getBalance() {
-    const balanceTmp = await getTokenBalance(token.address);
-    setBalance(balanceTmp);
+    try {
+      const balanceTmp = await getTokenBalance(token.address);
+      setBalance(balanceTmp);
+    } catch (error) {
+      console.error("Could not get token balance", error)
+    }
+    
   }
 
   useEffect(() => {
