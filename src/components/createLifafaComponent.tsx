@@ -22,6 +22,7 @@ import { openDailect } from "@/utils/share";
 import { PublicKey } from "@solana/web3.js";
 import { useOktoWallet } from "@/providers/custom-okto-wallet-provider";
 import { OktoContextType, useOkto } from "okto-sdk-react";
+import { storeLifafa } from "@/utils/firebaseHelpers";
 // import { useAnchorWallet, useWallet } from "@solana/wallet-adapter-react";
 
 const shortenWalletAddress = (address: string): string => {
@@ -91,6 +92,9 @@ export const CreateLifafaComponent = () => {
   }, [amount, maxClaims, time, desc, lifafaProgram]);
 
   async function handleCreate() {
+     if (!walletPublicKey) {
+       throw new Error("Wallet not initialized");
+     }
     // setTransactionModalVisible(true);
     const createLifafaData = {
       id: getRandomId(),
@@ -117,21 +121,10 @@ export const CreateLifafaComponent = () => {
       console.log("raw Txn", rawTxn);
       const jobStatus = await executeRawTransactionWithJobStatus(rawTxn)
       console.log(jobStatus)
+
+      // storeLifafa(walletPublicKey.toString(), id, transaction_hash, "created");
       // setEnvelopModalVisible(true);
       // setId(createLifafaData.id.toString());
-      // await saveLifafa({
-      //   id: createLifafaData.id.toString(),
-      //   creation_time: '', //current timestamp
-      //   time_limit: createLifafaData.timeleft.toString(),
-      //   owner: walletAddress? walletAddress: '',
-      //   owner_name: shortenWalletAddress(walletAddress? walletAddress: ''),
-      //   max_claims: createLifafaData.maxClaims.toString(),
-      //   mint_of_token_being_sent: walletAddress? walletAddress: '',
-      //   amount: createLifafaData.amount.toString(),
-      //   desc: createLifafaData.desc.toString(),
-      //   claim_mode: "Random",
-      //   wallet_address: walletAddress? walletAddress: ''
-      // });
     } catch (error) {
       console.error("create Lifafa: ", error);
     }
