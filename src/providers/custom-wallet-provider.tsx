@@ -4,6 +4,7 @@ import { createContext, ReactNode, useContext, useMemo } from "react";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey, Transaction, VersionedTransaction } from "@solana/web3.js";
 import * as anchor from "@coral-xyz/anchor";
+import { useCluster } from "./cluster-provider";
 
 export interface CustomWalletContext {
   walletAddress: string | null;
@@ -24,6 +25,7 @@ export function CustomWalletProvider({ children }: { children: ReactNode }) {
     () => (publicKey ? publicKey.toString() : null),
     [publicKey],
   );
+  const { getExplorerUrl } = useCluster();
 
   async function executeRawTransaction(
     rawTxn: anchor.web3.Transaction,
@@ -33,7 +35,7 @@ export function CustomWalletProvider({ children }: { children: ReactNode }) {
       signedTransaction.serialize(),
     );
     await connection.confirmTransaction(txid);
-    console.log(`View transaction on Solscan: https://solscan.io/tx/${txid}`);
+    console.log(`View transaction:${getExplorerUrl('tx/'+txid)}`);
     return txid;
   }
 

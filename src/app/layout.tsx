@@ -19,7 +19,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import OktoAuthButton from "@/components/OktoAuthButton";
 import { CustomWalletProvider } from "@/providers/custom-wallet-provider";
-import { ClusterProvider } from "@/providers/cluster-provider";
+import { ClusterProvider, networkType } from "@/providers/cluster-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -45,7 +45,7 @@ export default async function RootLayout({
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <ReactQueryProvider>
-            <ClusterProvider network="devnet">
+            <ClusterProvider network={process.env.NEXT_PUBLIC_NETWORK as networkType || "mainnet"}>
               <SolanaProvider>
                 <RecoilProvider>
                   <CustomWalletProvider>

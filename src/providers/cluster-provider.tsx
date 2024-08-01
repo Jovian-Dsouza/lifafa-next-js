@@ -34,12 +34,14 @@ const Context = createContext<ClusterProviderContext>(
   {} as ClusterProviderContext,
 );
 
+export type networkType = "mainnet" | "devnet"
+
 export function ClusterProvider({
   children,
   network,
 }: {
   children: ReactNode;
-  network: "mainnet" | "devnet";
+  network: networkType;
 }) {
   const cluster = useMemo(
     () =>

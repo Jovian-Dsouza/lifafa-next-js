@@ -15,6 +15,7 @@ import { openDailect } from "@/utils/share";
 import { PublicKey } from "@solana/web3.js";
 import { storeLifafa } from "@/utils/firebaseHelpers";
 import { useCustomWallet } from "@/providers/custom-wallet-provider";
+import { useCluster } from "@/providers/cluster-provider";
 
 const shortenWalletAddress = (address: string): string => {
   if (address.length <= 8) {
@@ -39,6 +40,7 @@ export const CreateLifafaComponent = () => {
   const [envelopeModalVisible, setEnvelopModalVisible] = useState(false);
   const [id, setId] = useState("");
   const [selectedToken, setSelectedToken] = useState(tokens[0]);
+  const { cluster } = useCluster();
 
   const timeLeft = useMemo(() => {
     if (time) {
@@ -56,7 +58,7 @@ export const CreateLifafaComponent = () => {
       !lifafaProgram ||
       !walletPublicKey
     );
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [amount, maxClaims, time, desc, lifafaProgram]);
 
   async function handleCreate() {
@@ -84,9 +86,9 @@ export const CreateLifafaComponent = () => {
         ClaimMode.Random,
         new PublicKey(selectedToken.address),
       );
-      const txnHash = await executeRawTransaction(rawTxn)
+      const txnHash = await executeRawTransaction(rawTxn);
 
-      // storeLifafa(walletPublicKey.toString(), id, transaction_hash, "created");
+      storeLifafa(cluster.networkName, walletPublicKey.toString(), id, txnHash);
       setEnvelopModalVisible(true);
       setId(createLifafaData.id.toString());
     } catch (error) {
