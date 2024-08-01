@@ -37,6 +37,8 @@ export function CustomOktoWalletProvider({ children }: WalletProviderProps) {
   const [wallet, setWallet] = useState<Wallet | null>(null);
   const { selectedCluster } = useCluster();
   const { getWallets, getPortfolio, isLoggedIn } = useOkto() as OktoContextType;
+  const [txnData, setTxnData] = useState();
+  const [transactionModalVisible, setTransactionModalVisible] = useState(false);
 
   const network = useMemo(
     () => {
