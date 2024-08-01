@@ -7,6 +7,13 @@ export const authOptions: AuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code",
+        },
+      },
     }),
   ],
   callbacks: {
@@ -17,7 +24,7 @@ export const authOptions: AuthOptions = {
       return token;
     },
 
-    async session({ session, token }) {
+    async session({ session, token, user }) {
       session.id_token = token.id_token as string;
       return session;
     },

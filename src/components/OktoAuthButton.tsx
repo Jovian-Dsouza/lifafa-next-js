@@ -62,6 +62,10 @@ function OktoAuthButton() {
   const idToken = useMemo(() => (session ? session.id_token : null), [session]);
   const { isLoggedIn, authenticate, logOut } = useOkto() as OktoContextType;
 
+  // useEffect(()=>{
+  //   console.log("session", session)
+  // }, [session])
+
   async function handleAuthenticate() {
     if (!idToken) {
       console.log("no idtoken");
@@ -95,7 +99,7 @@ function OktoAuthButton() {
       {session ? (
         <LogoutButton onClick={handleSignOut} />
       ) : (
-        <LoginButton onClick={signIn} />
+        <LoginButton onClick={() => signIn('google')} />
       )}
     </div>
   );
