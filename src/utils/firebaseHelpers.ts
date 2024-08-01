@@ -10,20 +10,18 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 
-export type LifafaType = "created" | "sent";
-
 export async function storeLifafa(
+  network: string,
   walletPublicKey: string,
   id: string,
   transaction_hash: string,
-  lifafaType: LifafaType,
 ): Promise<void> {
   if (!walletPublicKey) {
     return;
   }
   id = String(id);
   try {
-    await setDoc(doc(db, "users", walletPublicKey, lifafaType, id), {
+    await setDoc(doc(db, network, walletPublicKey, id), {
       id,
       transaction_hash,
       timestamp: serverTimestamp(),
@@ -34,16 +32,16 @@ export async function storeLifafa(
 }
 
 export function retrieveLifafa(
+  network: string,
   walletPublicKey: string,
   setData: (data: string[]) => void,
-  lifafaType: LifafaType,
 ): (() => void) | null {
   if (!walletPublicKey) {
     return null;
   }
   try {
     const q = query(
-      collection(db, "users", walletPublicKey, lifafaType),
+      collection(db, network, walletPublicKey),
       orderBy("timestamp", "desc"),
     );
 
