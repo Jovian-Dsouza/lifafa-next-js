@@ -1,4 +1,5 @@
 import { Token } from "@/data/constants";
+import { useCluster } from "@/providers/cluster-provider";
 import { getTokenPrice } from "@/utils/jupiter-price";
 import React, { useMemo, useState, useEffect } from "react";
 
@@ -13,9 +14,9 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   setAmount,
   token,
 }) => {
-
   const [tokenPrice, setTokenPrice] = useState<number>(0);
-  
+  const { cluster } = useCluster();
+
   const price = useMemo(() => {
     // TODO: Update with price API
     if (!amount) {
@@ -27,12 +28,15 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   async function updateTokenPrice() {
     const token_price = await getTokenPrice(token.address);
     // console.log(token_price)
-    setTokenPrice(token_price)
+    setTokenPrice(token_price);
   }
 
-  useEffect(()=>{
-    updateTokenPrice()
-  }, [amount])
+  useEffect(() => {
+    if (amount > 0 && cluster.name === "mainnet") {
+      updateTokenPrice();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [amount, cluster]);
 
   function handleAmountChange(e: React.ChangeEvent<HTMLInputElement>) {
     const floatAmount = parseFloat(e.target.value);

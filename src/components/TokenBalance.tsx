@@ -1,35 +1,31 @@
+import { Token } from "@/data/constants";
+import { useCustomWallet } from "@/providers/custom-wallet-provider";
 import React, { useEffect, useMemo, useState } from "react";
-// import { useOkto } from "okto-sdk-react-native";
-// import { useCluster } from "../providers/ClusterProvider";
-// import { useWallet } from "../providers/WalletProvider";
 
 interface TokenBalanceProps {
-  token: {
-    symbol: string;
-  };
+  token: Token
 }
 
 const TokenBalance: React.FC<TokenBalanceProps> = ({ token }) => {
-  // const { getPortfolio } = useOkto();
-  // const { selectedCluster } = useCluster();
-  // const { wallet, getBalance: getOktoBalance } = useWallet();
+  const { getTokenBalance, isLoggedIn } = useCustomWallet();
   const [balance, setBalance] = useState(0);
 
-  // const networkName = useMemo(
-  //   () => selectedCluster.name.toUpperCase(),
-  //   [selectedCluster],
-  // );
+  async function getBalance() {
+    try {
+      const balanceTmp = await getTokenBalance(token.address);
+      setBalance(balanceTmp);
+    } catch (error) {
+      console.error("Could not get token balance", error)
+    }
+    
+  }
 
-  // async function getBalance() {
-  //   const balanceTmp = await getOktoBalance(token.symbol);
-  //   setBalance(balanceTmp);
-  // }
-
-  // useEffect(() => {
-  //   if (wallet) {
-  //     getBalance();
-  //   }
-  // }, [token, networkName, wallet]);
+  useEffect(() => {
+    if (isLoggedIn) {
+      getBalance();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token, isLoggedIn]);
 
   return (
     <p className="text-gray-500 text-xs">

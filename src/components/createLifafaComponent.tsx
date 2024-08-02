@@ -1,16 +1,9 @@
 import { useState, useMemo } from "react";
 import { ClaimMode, useLifafaProgram } from "../hooks/useLifafaProgram";
 import { getRandomId } from "@/utils/random";
-// import { useAppContext } from "../providers/AppContextProvider";
 import { tokens } from "@/data/constants";
-// import { useWallet } from "../providers/WalletProvider";
-// import { storeLifafa } from "../utils/firestoreUtils";
-// import { handleCopyLink, handleShare } from "../utils/share";
 import dayjs from "dayjs";
-
 import { MultilineTextInput } from "./MultilineTextInput";
-// import { TransactionRequestModal } from "./TransactionRequestModal";
-// import { EnvelopeModal } from "./EnvelopeModal";
 import { TokenSelector } from "./TokenSelector";
 import { AmountInput } from "./AmountInput";
 import { MaxClaimsInput } from "./MaxClaimsInput";
@@ -18,46 +11,27 @@ import { CustomDatePicker } from "./CustomDatePicker";
 import { CreateButton } from "./CreateButton";
 import TokenBalance from "./TokenBalance";
 import { EnvelopeModal } from "./EnvelopeModal";
-import { openDailect } from "@/utils/share";
+import { copyToClipboard, openClaimPage, openDailect } from "@/utils/share";
 import { PublicKey } from "@solana/web3.js";
-import { saveLifafa } from "@/utils/api-helper";
+import { storeLifafa } from "@/utils/firebaseHelpers";
 import { useCustomWallet } from "@/providers/custom-wallet-provider";
-// import { useAnchorWallet, useWallet } from "@solana/wallet-adapter-react";
-
-const shortenWalletAddress = (address: string): string => {
-  if (address.length <= 8) {
-    return "lifafa";
-  }
-  const start = address.slice(0, 4);
-  const end = address.slice(-4);
-  return `${start}...${end}`;
-};
+import { useCluster } from "@/providers/cluster-provider";
 
 export const CreateLifafaComponent = () => {
-  //   const { executeRawTransactionWithJobStatus } = useOkto();
+  const { walletPublicKey, executeRawTransaction, userName } =
+    useCustomWallet();
   const {
     program: lifafaProgram,
     createLifafa,
-    claimLifafa,
   } = useLifafaProgram();
   const [amount, setAmount] = useState(0);
   const [maxClaims, setMaxClaims] = useState<number | null>(null);
   const [time, setTime] = useState<Date | null>(null);
   const [desc, setDesc] = useState("");
-  const [transactionModalVisible, setTransactionModalVisible] = useState(false);
   const [envelopeModalVisible, setEnvelopModalVisible] = useState(false);
   const [id, setId] = useState("");
-  //   const { user } = useAppContext();
   const [selectedToken, setSelectedToken] = useState(tokens[0]);
-  const [txnData, setTxnData] = useState();
-  const {walletAddress} = useCustomWallet();
-
-  //   const fee = useMemo(() => {
-  //     if (txnData) {
-  //       return txnData.fee;
-  //     }
-  //     return "0";
-  //   }, [txnData]);
+  const { cluster } = useCluster();
 
   const timeLeft = useMemo(() => {
     if (time) {
@@ -72,23 +46,36 @@ export const CreateLifafaComponent = () => {
       !maxClaims ||
       desc === "" ||
       time === null ||
-      !lifafaProgram
+      !lifafaProgram ||
+      !walletPublicKey
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [amount, maxClaims, time, desc, lifafaProgram]);
 
+  function clearStates() {
+    setAmount(0);
+    setMaxClaims(null);
+    setTime(null);
+    setDesc("");
+    setId("");
+  }
+
   async function handleCreate() {
-    // setTransactionModalVisible(true);
+    if (!walletPublicKey) {
+      throw new Error("Wallet not initialized");
+    }
     const createLifafaData = {
       id: getRandomId(),
       amount: Number(amount),
       timeleft: timeLeft,
       maxClaims: Number(maxClaims),
-      ownerName: "lifafa",
+      ownerName: userName,
       desc: desc,
     };
-    console.log("CreateLifafaData: ", createLifafaData);
+    // console.log("CreateLifafaData: ", createLifafaData);
+    // console.log("walletpublickey", walletPublicKey.toString());
     try {
-      const txnDataTmp = await createLifafa(
+      const rawTxn = await createLifafa(
         createLifafaData.id,
         createLifafaData.amount * 10 ** selectedToken.decimals,
         createLifafaData.timeleft,
@@ -97,30 +84,18 @@ export const CreateLifafaComponent = () => {
         createLifafaData.desc,
         ClaimMode.Random,
         new PublicKey(selectedToken.address),
+        walletPublicKey
+      );
+      const txnHash = await executeRawTransaction(rawTxn);
+
+      storeLifafa(
+        cluster.networkName,
+        walletPublicKey.toString(),
+        createLifafaData.id.toString(),
+        txnHash,
       );
       setEnvelopModalVisible(true);
       setId(createLifafaData.id.toString());
-      await saveLifafa({
-        id: createLifafaData.id.toString(),
-        creation_time: '', //current timestamp
-        time_limit: createLifafaData.timeleft.toString(),
-        owner: walletAddress? walletAddress: '',
-        owner_name: shortenWalletAddress(walletAddress? walletAddress: ''),
-        max_claims: createLifafaData.maxClaims.toString(),
-        mint_of_token_being_sent: walletAddress? walletAddress: '',
-        amount: createLifafaData.amount.toString(),
-        desc: createLifafaData.desc.toString(),
-        claim_mode: "Random",
-        wallet_address: walletAddress? walletAddress: ''
-      });
-    } catch (error) {
-      console.error("create Lifafa: ", error);
-    }
-  }
-
-  async function handleClaim() {
-    try {
-      const txnDataTmp = await claimLifafa(7620951291);
     } catch (error) {
       console.error("create Lifafa: ", error);
     }
@@ -130,7 +105,7 @@ export const CreateLifafaComponent = () => {
     <div className="w-[22rem] bg-[#F5F6FE]  rounded-3xl p-4 shadow">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold text-black">Create Lifafa</h2>
-        {/* <TokenBalance token={selectedToken} /> */}
+        <TokenBalance token={selectedToken} />
       </div>
 
       {/* Token Selector and price */}
@@ -163,8 +138,6 @@ export const CreateLifafaComponent = () => {
         disabled={isCreateDisabled}
       />
 
-      {/* <CreateButton onPress={() => handleClaim()} disabled={false} /> */}
-
       {/* Modals */}
       <EnvelopeModal
         amount={amount}
@@ -174,9 +147,15 @@ export const CreateLifafaComponent = () => {
         maxClaims={maxClaims ? maxClaims : 0}
         visible={envelopeModalVisible}
         setVisible={setEnvelopModalVisible}
-        onCopyLink={() => {}}
+        onCopyLink={() => {
+          copyToClipboard(id);
+        }}
         onShare={() => {
-          openDailect(id);
+          openDailect(id, cluster.name);
+          // openClaimPage(id);
+        }}
+        onClose={()=>{
+          clearStates();
         }}
       />
     </div>

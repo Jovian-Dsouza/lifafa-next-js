@@ -26,6 +26,10 @@ import {
 const LIFAFA_PROGRAM_ID = (IDL as Lifafa).address;
 const lifafaProgramId = new PublicKey(LIFAFA_PROGRAM_ID);
 const LIFAFA_SEED = "lifafa";
+const solanaRPC =
+  process.env.NEXT_PUBLIC_NETWORK === "mainnet"
+    ? process.env.NEXT_PUBLIC_SOLANA_MAINNET_RPC
+    : process.env.NEXT_PUBLIC_SOLANA_DEVNET_RPC;
 
 function getLifafaPDA(lifafaId: number): [anchor.web3.PublicKey, number] {
   return anchor.web3.PublicKey.findProgramAddressSync(
@@ -47,10 +51,8 @@ interface LifafaData {
   desc: string;
 }
 
-async function getLifafaData(id: number): Promise<LifafaData> {
-  const connection = new Connection(
-    process.env.NEXT_PUBLIC_SOLANA_RPC! || clusterApiUrl("devnet"),
-  );
+async function getLifafaData(id: number): Promise<LifafaData> { 
+  const connection = new Connection(solanaRPC || clusterApiUrl("devnet"));
   const wallet = new anchor.Wallet(anchor.web3.Keypair.generate());
   const provider = new anchor.AnchorProvider(connection, wallet);
 
@@ -139,9 +141,7 @@ export const POST = async (req: Request) => {
       });
     }
 
-    const connection = new Connection(
-      process.env.NEXT_PUBLIC_SOLANA_RPC! || clusterApiUrl("devnet"),
-    );
+    const connection = new Connection(solanaRPC || clusterApiUrl("devnet"));
     const keypairWallet = anchor.web3.Keypair.generate();
     const wallet = new anchor.Wallet(keypairWallet);
     const provider = new anchor.AnchorProvider(connection, wallet);

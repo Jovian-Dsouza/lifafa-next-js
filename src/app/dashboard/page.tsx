@@ -2,11 +2,25 @@
 
 import Card from "../../components/card";
 import styles from "@/styles/Dashboard.module.scss";
-import { useState } from "react";
+import { retrieveLifafa } from "@/utils/firebaseHelpers";
+import { useEffect, useState } from "react";
 
 type OptionType = 1 | 2;
 
 const Dashboard: React.FC = () => {
+  const [data, setData] = useState<string[]>([]);
+  const walletPublicKey = "user-wallet-public-key1"; // Replace with actual wallet public key
+  const type = "created"; // or 'sent'
+
+  // useEffect(() => {
+  //   const unsubscribe = retrieveLifafa(walletPublicKey, setData, type);
+  //   return () => {
+  //     if (unsubscribe) {
+  //       unsubscribe();
+  //     }
+  //   };
+  // }, [walletPublicKey, type]);
+
   const [selected, setSelected] = useState<OptionType>(1);
 
   const handleSelect = (option: OptionType) => {
