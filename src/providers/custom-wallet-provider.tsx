@@ -1,86 +1,42 @@
 "use client";
 
-import { createContext, ReactNode, useContext, useMemo } from "react";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { PublicKey, Transaction, VersionedTransaction } from "@solana/web3.js";
+import { createContext, ReactNode, useContext } from "react";
+import { PublicKey } from "@solana/web3.js";
 import * as anchor from "@coral-xyz/anchor";
-import { useCluster } from "./cluster-provider";
+import { useConnectorWallet } from "@/hooks/useConnectorWallet";
+import { useOktoWallet } from "@/hooks/useOktoWallet";
 
 export interface CustomWalletContext {
   walletAddress: string | null;
   walletPublicKey: PublicKey | null;
   isLoggedIn: boolean;
-  userName: string,
+  userName: string;
   executeRawTransaction(rawTxn: anchor.web3.Transaction): Promise<string>;
   getTokenBalance(tokenMintAddress: string): Promise<number>;
 }
+
+export type WalletType = "connector" | "okto";
 
 const CustomWalletContext = createContext<CustomWalletContext | undefined>(
   undefined,
 );
 
-const shortenWalletAddress = (address: string | null): string => {
-  if (!address || address.length <= 8) {
-    return "";
-  }
-  const start = address.slice(0, 4);
-  const end = address.slice(-4);
-  return `${start}...${end}`;
-};
+export function CustomWalletProvider({
+  children,
+  walletType,
+}: {
+  children: ReactNode;
+  walletType: WalletType;
+}) {
 
-export function CustomWalletProvider({ children }: { children: ReactNode }) {
-  const { publicKey, signTransaction, connected } = useWallet();
-  const { connection } = useConnection();
-  const walletAddress = useMemo(
-    () => (publicKey ? publicKey.toString() : null),
-    [publicKey],
-  );
-  const { getExplorerUrl } = useCluster();
-  const userName = useMemo(() => shortenWalletAddress(walletAddress), [walletAddress])
+  const connectorWallet = useConnectorWallet();
+  const oktoWallet = useOktoWallet();
 
-  async function executeRawTransaction(
-    rawTxn: anchor.web3.Transaction,
-  ): Promise<string> {
-    const signedTransaction = await signTransaction!(rawTxn);
-    const txid = await connection.sendRawTransaction(
-      signedTransaction.serialize(),
-    );
-    await connection.confirmTransaction(txid);
-    console.log(`View transaction:${getExplorerUrl('tx/'+txid)}`);
-    return txid;
-  }
-
-  async function getTokenBalance(tokenMintAddress: string): Promise<number> {
-    if (!publicKey) {
-      throw new Error("Wallet not connected");
-    }
-
-    const tokenMintPublicKey = new PublicKey(tokenMintAddress);
-    const tokenAccounts = await connection.getParsedTokenAccountsByOwner(
-      publicKey,
-      { mint: tokenMintPublicKey },
-    );
-
-    if (tokenAccounts.value.length === 0) {
-      return 0;
-    }
-
-    const tokenBalance =
-      tokenAccounts.value[0].account.data.parsed.info.tokenAmount.uiAmount;
-    return tokenBalance;
-  }
+  const walletContextValue =
+    walletType === "connector" ? connectorWallet : oktoWallet;
 
   return (
-    <CustomWalletContext.Provider
-      value={{
-        walletAddress,
-        walletPublicKey: publicKey,
-        isLoggedIn: connected,
-        userName,
-        executeRawTransaction,
-        getTokenBalance,
-      }}
-    >
+    <CustomWalletContext.Provider value={walletContextValue}>
       {children}
     </CustomWalletContext.Provider>
   );
