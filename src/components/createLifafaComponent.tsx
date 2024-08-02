@@ -152,7 +152,7 @@ export const CreateLifafaComponent = () => {
           copyToClipboard(id);
         }}
         onShare={() => {
-          openDailect(id);
+          openDailect(id, cluster.name);
         }}
       />
     </div>
