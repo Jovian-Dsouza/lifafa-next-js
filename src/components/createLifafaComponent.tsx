@@ -11,14 +11,15 @@ import { CustomDatePicker } from "./CustomDatePicker";
 import { CreateButton } from "./CreateButton";
 import TokenBalance from "./TokenBalance";
 import { EnvelopeModal } from "./EnvelopeModal";
-import { openDailect } from "@/utils/share";
+import { copyToClipboard, openDailect } from "@/utils/share";
 import { PublicKey } from "@solana/web3.js";
 import { storeLifafa } from "@/utils/firebaseHelpers";
 import { useCustomWallet } from "@/providers/custom-wallet-provider";
 import { useCluster } from "@/providers/cluster-provider";
 
 export const CreateLifafaComponent = () => {
-  const { walletPublicKey, executeRawTransaction, userName } = useCustomWallet();
+  const { walletPublicKey, executeRawTransaction, userName } =
+    useCustomWallet();
   const {
     program: lifafaProgram,
     createLifafa,
@@ -51,6 +52,14 @@ export const CreateLifafaComponent = () => {
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [amount, maxClaims, time, desc, lifafaProgram]);
+
+  function clearStates() {
+    setAmount(0);
+    setMaxClaims(null);
+    setTime(null);
+    setDesc("");
+    setId("");
+  }
 
   async function handleCreate() {
     if (!walletPublicKey) {
@@ -87,6 +96,7 @@ export const CreateLifafaComponent = () => {
       );
       setEnvelopModalVisible(true);
       setId(createLifafaData.id.toString());
+      clearStates();
     } catch (error) {
       console.error("create Lifafa: ", error);
     }
@@ -138,7 +148,9 @@ export const CreateLifafaComponent = () => {
         maxClaims={maxClaims ? maxClaims : 0}
         visible={envelopeModalVisible}
         setVisible={setEnvelopModalVisible}
-        onCopyLink={() => {}}
+        onCopyLink={() => {
+          copyToClipboard(id);
+        }}
         onShare={() => {
           openDailect(id);
         }}
