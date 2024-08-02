@@ -20,10 +20,7 @@ import { useCluster } from "@/providers/cluster-provider";
 export const CreateLifafaComponent = () => {
   const { walletPublicKey, executeRawTransaction, userName } =
     useCustomWallet();
-  const {
-    program: lifafaProgram,
-    createLifafa,
-  } = useLifafaProgram();
+  const { program: lifafaProgram, createLifafa } = useLifafaProgram();
   const [amount, setAmount] = useState(0);
   const [maxClaims, setMaxClaims] = useState<number | null>(null);
   const [time, setTime] = useState<Date | null>(null);
@@ -32,6 +29,7 @@ export const CreateLifafaComponent = () => {
   const [id, setId] = useState("");
   const [selectedToken, setSelectedToken] = useState(tokens[0]);
   const { cluster } = useCluster();
+  const [isLoading, setIsLoading] = useState(false);
 
   const timeLeft = useMemo(() => {
     if (time) {
@@ -64,6 +62,7 @@ export const CreateLifafaComponent = () => {
     if (!walletPublicKey) {
       throw new Error("Wallet not initialized");
     }
+    setIsLoading(true);
     const createLifafaData = {
       id: getRandomId(),
       amount: Number(amount),
@@ -84,7 +83,7 @@ export const CreateLifafaComponent = () => {
         createLifafaData.desc,
         ClaimMode.Random,
         new PublicKey(selectedToken.address),
-        walletPublicKey
+        walletPublicKey,
       );
       const txnHash = await executeRawTransaction(rawTxn);
 
@@ -98,6 +97,8 @@ export const CreateLifafaComponent = () => {
       setId(createLifafaData.id.toString());
     } catch (error) {
       console.error("create Lifafa: ", error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -134,8 +135,9 @@ export const CreateLifafaComponent = () => {
       <MultilineTextInput text={desc} setText={setDesc} maxLength={50} />
 
       <CreateButton
-        onPress={() => handleCreate()}
+        onPress={handleCreate}
         disabled={isCreateDisabled}
+        isLoading={isLoading}
       />
 
       {/* Modals */}
@@ -154,7 +156,7 @@ export const CreateLifafaComponent = () => {
           openDailect(id, cluster.name);
           // openClaimPage(id);
         }}
-        onClose={()=>{
+        onClose={() => {
           clearStates();
         }}
       />
