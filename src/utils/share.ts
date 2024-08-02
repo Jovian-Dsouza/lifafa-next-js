@@ -1,5 +1,5 @@
 export const openDailect = (id: string, network: string) => {
-  const url = `solana-action:https://www.lifafa.fun/claim_lifafa/${id}`;
+  const url = `solana-action:https://www.lifafa.fun/api/actions/claim_lifafa/${id}`;
   const shareUrl = network === "devnet" ? `https://dial.to/devnet?action=${url}` : `https://dial.to/?action=${url}`;
   window.open(shareUrl, "_blank");
 };
