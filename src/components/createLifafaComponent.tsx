@@ -24,7 +24,7 @@ export const CreateLifafaComponent = () => {
     program: lifafaProgram,
     createLifafa,
     claimLifafa,
-  } = useLifafaProgram(walletPublicKey);
+  } = useLifafaProgram();
   const [amount, setAmount] = useState(0);
   const [maxClaims, setMaxClaims] = useState<number | null>(null);
   const [time, setTime] = useState<Date | null>(null);
@@ -74,7 +74,7 @@ export const CreateLifafaComponent = () => {
       desc: desc,
     };
     // console.log("CreateLifafaData: ", createLifafaData);
-    // console.log("walletpublickey", walletPublicKey);
+    // console.log("walletpublickey", walletPublicKey.toString());
     try {
       const rawTxn = await createLifafa(
         createLifafaData.id,
@@ -85,6 +85,7 @@ export const CreateLifafaComponent = () => {
         createLifafaData.desc,
         ClaimMode.Random,
         new PublicKey(selectedToken.address),
+        walletPublicKey
       );
       const txnHash = await executeRawTransaction(rawTxn);
 
@@ -96,7 +97,6 @@ export const CreateLifafaComponent = () => {
       );
       setEnvelopModalVisible(true);
       setId(createLifafaData.id.toString());
-      clearStates();
     } catch (error) {
       console.error("create Lifafa: ", error);
     }

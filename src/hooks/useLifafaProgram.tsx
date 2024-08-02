@@ -22,9 +22,7 @@ export enum ClaimMode {
   Equal = 1,
 }
 
-export function useLifafaProgram(
-  walletPublicKey: anchor.web3.PublicKey | null,
-) {
+export function useLifafaProgram() {
   const { connection } = useConnection();
   const anchorWallet = useAnchorWallet();
 
@@ -50,6 +48,7 @@ export function useLifafaProgram(
     desc: string,
     claimMode: ClaimMode,
     mint: PublicKey,
+    walletPublicKey: anchor.web3.PublicKey,
   ): Promise<anchor.web3.Transaction> {
     console.log(`\nCreate Envelope, amount = ${amount}, id = ${id}`);
     if (!program) {
@@ -111,7 +110,10 @@ export function useLifafaProgram(
     }
   }
 
-  async function claimLifafa(id: any): Promise<anchor.web3.Transaction> {
+  async function claimLifafa(
+    id: any,
+    walletPublicKey: anchor.web3.PublicKey,
+  ): Promise<anchor.web3.Transaction> {
     console.log("\nClaiming Envelope id: ", id);
     if (!program) {
       throw new Error("Program not initialized");

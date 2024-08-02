@@ -8,6 +8,7 @@ import RedeemLifafa from "../../../../public/claim_lifafa_og.png";
 import { useLifafaProgram } from "@/hooks/useLifafaProgram";
 import { getTokenByAddress } from "@/data/constants";
 import { LifafaData } from "@/Types";
+import { useCustomWallet } from "@/providers/custom-wallet-provider";
 
 const LifafaStatus = ({
   numDaysLeft,
@@ -73,10 +74,11 @@ const LifafaActions = () => {
 
 const Redeem = ({ params }: { params: { id: string } }) => {
   const lifafaId = params.id;
-  const { claimLifafa, fetchLifafa, program } = useLifafaProgram(new PublicKey(""));
+  const { claimLifafa, fetchLifafa, program } = useLifafaProgram();
   const [isOpen, setIsOpen] = useState(false);
   const [lifafaData, setLifafaData] = useState<LifafaData | null>(null);
   const disabled = useMemo(() => !program, [program]);
+  const { walletPublicKey } = useCustomWallet();
 
   async function getLifafaData() {
     if (!lifafaId) {
@@ -117,10 +119,11 @@ const Redeem = ({ params }: { params: { id: string } }) => {
   }
 
   async function handleClaim() {
+    if (!walletPublicKey) {
+      throw new Error("Wallet not initialized");
+    }
     try {
-      //TODO check if user already claimed
-      await claimLifafa(Number(lifafaId));
-      //TODO store the amount claimed
+      await claimLifafa(Number(lifafaId), walletPublicKey);
     } catch (error) {
       console.error("create Lifafa: ", error);
     }
