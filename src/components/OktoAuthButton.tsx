@@ -8,7 +8,7 @@ const LogoutButton = ({ onClick }: { onClick: () => void }) => {
 
   const handleSignOut = async () => {
     setIsSigningOut(true);
-    await signOut();
+    onClick();
     setIsSigningOut(false);
   };
 
@@ -62,10 +62,6 @@ function OktoAuthButton() {
   const idToken = useMemo(() => (session ? session.id_token : null), [session]);
   const { isLoggedIn, authenticate, logOut } = useOkto() as OktoContextType;
 
-  // useEffect(()=>{
-  //   console.log("session", session)
-  // }, [session])
-
   async function handleAuthenticate() {
     if (!idToken) {
       console.log("no idtoken");
@@ -83,6 +79,7 @@ function OktoAuthButton() {
   async function handleSignOut() {
     try {
       logOut();
+      signOut();
       return { result: "logout success" };
     } catch (error) {
       return { result: "logout failed" };
@@ -91,15 +88,24 @@ function OktoAuthButton() {
 
   useEffect(() => {
     // console.log("Idtoken", idToken);
-    handleAuthenticate()
-  }, [idToken]);
+    // console.log("isLoggedIn", isLoggedIn)
+
+    const timeOut = setTimeout(() => {
+      if (idToken && !isLoggedIn) {
+        console.log("Authenticate called");
+        handleAuthenticate();
+      }
+    }, 500);
+
+    return () => clearTimeout(timeOut);
+  }, [idToken, isLoggedIn]);
 
   return (
     <div className="flex justify-center items-center text-white">
       {session ? (
         <LogoutButton onClick={handleSignOut} />
       ) : (
-        <LoginButton onClick={() => signIn('google')} />
+        <LoginButton onClick={() => signIn("google")} />
       )}
     </div>
   );
