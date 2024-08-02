@@ -1,26 +1,27 @@
 import { images } from "./assets";
 
-export const SIGN_MESSAGE = "Sign into Lifafa";
+const devnetTokens: Token[] = [
+  {
+    name: "USDC_DEVNET",
+    symbol: "USDC_DEVNET",
+    icon: images.tokens.usdc,
+    blockchain: "SOL_DEVNET",
+    blockchainIcon: images.tokens.sol,
+    decimals: 6,
+    address: "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU",
+  },
+  {
+    name: "SEND",
+    symbol: "SEND",
+    icon: images.tokens.send,
+    blockchain: "SOL_DEVNET",
+    blockchainIcon: images.tokens.sol,
+    decimals: 6,
+    address: "DXYqm3CbM5W6iYA6vDmn35m3LCYhkwKFCZtv2J3q726r",
+  },
+];
 
-export const tokens: Token[] = [
-  // {
-  //   name: "SOL",
-  //   symbol: "SOL",
-  //   icon: images.tokens.sol,
-  //   blockchain: "SOL",
-  //   blockchainIcon: images.tokens.sol,
-  //   decimals: 9,
-  //   address: "",
-  // },
-  // {
-  //   name: "USDC_DEVNET",
-  //   symbol: "USDC_DEVNET",
-  //   icon: images.tokens.usdc,
-  //   blockchain: "SOL",
-  //   blockchainIcon: images.tokens.sol,
-  //   decimals: 6,
-  //   address: "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU",
-  // },
+const mainnetTokens: Token[] = [
   {
     name: "USDC",
     symbol: "USDC",
@@ -39,16 +40,9 @@ export const tokens: Token[] = [
     decimals: 6,
     address: "SENDdRQtYMWaQrBroBrJ2Q53fgVuq95CV9UPGEvpCxa",
   },
-  {
-    name: "SEND",
-    symbol: "SEND",
-    icon: images.tokens.send,
-    blockchain: "SOL_DEVNET",
-    blockchainIcon: images.tokens.sol,
-    decimals: 6,
-    address: "DXYqm3CbM5W6iYA6vDmn35m3LCYhkwKFCZtv2J3q726r",
-  },
 ];
+
+export const tokens = process.env.NEXT_PUBLIC_NETWORK === "devnet" ? devnetTokens : mainnetTokens;
 
 export interface Token {
   name: string;
