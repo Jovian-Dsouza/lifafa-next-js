@@ -12,6 +12,7 @@ interface EnvelopeModalProps {
   setVisible: (visible: boolean) => void;
   onCopyLink: () => void;
   onShare: () => void;
+  onClose: () => void;
 }
 
 export function EnvelopeModal({
@@ -24,6 +25,7 @@ export function EnvelopeModal({
   setVisible,
   onCopyLink,
   onShare,
+  onClose,
 }: EnvelopeModalProps) {
   const numDaysLeft = useMemo(() => {
     if (timeLeft > 0) {
@@ -34,6 +36,7 @@ export function EnvelopeModal({
 
   function close() {
     setVisible(false);
+    onClose();
   }
 
   if (!visible) return null;

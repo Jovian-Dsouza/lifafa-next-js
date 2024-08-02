@@ -11,7 +11,7 @@ import { CustomDatePicker } from "./CustomDatePicker";
 import { CreateButton } from "./CreateButton";
 import TokenBalance from "./TokenBalance";
 import { EnvelopeModal } from "./EnvelopeModal";
-import { copyToClipboard, openDailect } from "@/utils/share";
+import { copyToClipboard, openClaimPage, openDailect } from "@/utils/share";
 import { PublicKey } from "@solana/web3.js";
 import { storeLifafa } from "@/utils/firebaseHelpers";
 import { useCustomWallet } from "@/providers/custom-wallet-provider";
@@ -23,7 +23,6 @@ export const CreateLifafaComponent = () => {
   const {
     program: lifafaProgram,
     createLifafa,
-    claimLifafa,
   } = useLifafaProgram();
   const [amount, setAmount] = useState(0);
   const [maxClaims, setMaxClaims] = useState<number | null>(null);
@@ -153,6 +152,10 @@ export const CreateLifafaComponent = () => {
         }}
         onShare={() => {
           openDailect(id, cluster.name);
+          // openClaimPage(id);
+        }}
+        onClose={()=>{
+          clearStates();
         }}
       />
     </div>
