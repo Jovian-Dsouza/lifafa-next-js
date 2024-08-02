@@ -10,6 +10,7 @@ export interface CustomWalletContext {
   walletAddress: string | null;
   walletPublicKey: PublicKey | null;
   isLoggedIn: boolean;
+  userName: string,
   executeRawTransaction(rawTxn: anchor.web3.Transaction): Promise<string>;
   getTokenBalance(tokenMintAddress: string): Promise<number>;
 }
@@ -17,6 +18,15 @@ export interface CustomWalletContext {
 const CustomWalletContext = createContext<CustomWalletContext | undefined>(
   undefined,
 );
+
+const shortenWalletAddress = (address: string | null): string => {
+  if (!address || address.length <= 8) {
+    return "";
+  }
+  const start = address.slice(0, 4);
+  const end = address.slice(-4);
+  return `${start}...${end}`;
+};
 
 export function CustomWalletProvider({ children }: { children: ReactNode }) {
   const { publicKey, signTransaction, connected } = useWallet();
@@ -26,6 +36,7 @@ export function CustomWalletProvider({ children }: { children: ReactNode }) {
     [publicKey],
   );
   const { getExplorerUrl } = useCluster();
+  const userName = useMemo(() => shortenWalletAddress(walletAddress), [walletAddress])
 
   async function executeRawTransaction(
     rawTxn: anchor.web3.Transaction,
@@ -65,6 +76,7 @@ export function CustomWalletProvider({ children }: { children: ReactNode }) {
         walletAddress,
         walletPublicKey: publicKey,
         isLoggedIn: connected,
+        userName,
         executeRawTransaction,
         getTokenBalance,
       }}

@@ -17,17 +17,8 @@ import { storeLifafa } from "@/utils/firebaseHelpers";
 import { useCustomWallet } from "@/providers/custom-wallet-provider";
 import { useCluster } from "@/providers/cluster-provider";
 
-const shortenWalletAddress = (address: string): string => {
-  if (address.length <= 8) {
-    return "lifafa";
-  }
-  const start = address.slice(0, 4);
-  const end = address.slice(-4);
-  return `${start}...${end}`;
-};
-
 export const CreateLifafaComponent = () => {
-  const { walletPublicKey, executeRawTransaction } = useCustomWallet();
+  const { walletPublicKey, executeRawTransaction, userName } = useCustomWallet();
   const {
     program: lifafaProgram,
     createLifafa,
@@ -70,7 +61,7 @@ export const CreateLifafaComponent = () => {
       amount: Number(amount),
       timeleft: timeLeft,
       maxClaims: Number(maxClaims),
-      ownerName: shortenWalletAddress(walletPublicKey.toString()),
+      ownerName: userName,
       desc: desc,
     };
     // console.log("CreateLifafaData: ", createLifafaData);
