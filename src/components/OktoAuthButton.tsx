@@ -2,6 +2,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useSession, signOut, signIn } from "next-auth/react";
 import { OktoContextType, useOkto } from "okto-sdk-react";
+import Image from "next/image";
 
 const LogoutButton = ({ onClick }: { onClick: () => void }) => {
   const [isSigningOut, setIsSigningOut] = useState(false);
@@ -15,7 +16,7 @@ const LogoutButton = ({ onClick }: { onClick: () => void }) => {
   return (
     <button
       onClick={handleSignOut}
-      className={`px-6 py-2 bg-gray-700 text-white rounded-lg font-bold shadow-md transition duration-300 ease-in-out transform hover:bg-gray-600 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-500 ${
+      className={`px-4 py-2 bg-gray-700 text-white rounded-lg font-bold shadow-md transition duration-300 ease-in-out transform hover:bg-gray-600 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-500 ${
         isSigningOut ? "cursor-not-allowed opacity-50" : ""
       }`}
       disabled={isSigningOut}
@@ -42,7 +43,10 @@ const LogoutButton = ({ onClick }: { onClick: () => void }) => {
           ></path>
         </svg>
       ) : (
-        "Log Out"
+        <div className="flex items-center space-x-2">
+          <Image src="/okto.png" alt="Logo" width={30} height={30} />
+          <span className="">Log Out</span>
+        </div>
       )}
     </button>
   );
@@ -50,10 +54,11 @@ const LogoutButton = ({ onClick }: { onClick: () => void }) => {
 
 const LoginButton = ({ onClick }: { onClick: () => void }) => (
   <button
-    onClick={() => onClick()}
-    className="px-6 py-2 bg-blue-700 text-white rounded-lg font-bold shadow-md transition duration-300 ease-in-out transform hover:bg-blue-600 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    onClick={onClick}
+    className="flex items-center px-4 py-2 bg-blue-700 text-white rounded-lg font-bold shadow-md transition duration-300 ease-in-out transform hover:bg-blue-600 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500"
   >
-    Log In
+    <Image src="/okto.png" alt="Logo" width={30} height={30} />
+    <span className="ml-2">Log In</span>
   </button>
 );
 
