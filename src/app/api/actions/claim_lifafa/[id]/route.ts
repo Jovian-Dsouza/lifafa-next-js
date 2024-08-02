@@ -22,6 +22,7 @@ import {
   getAssociatedTokenAddressSync,
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
+import { getTokenByAddress } from "@/data/constants";
 
 const LIFAFA_PROGRAM_ID = (IDL as Lifafa).address;
 const lifafaProgramId = new PublicKey(LIFAFA_PROGRAM_ID);
@@ -85,15 +86,19 @@ export const GET = async (req: Request) => {
       });
     }
     const lifafaId = parseInt(id);
-    // console.log("lifafa id", lifafaId);
     const lifafaData = await getLifafaData(lifafaId);
-    // console.log(lifafaData);
-    const unit = 1e6; // LAMPORTS_PER_SOL
-    const amountString = (lifafaData.amount / unit).toString();
-    const tokenName = "SEND";
+    
+    const token = getTokenByAddress(lifafaData.mintOfTokenBeingSent.toString());
+    if(!token){
+      return new NextResponse(`${lifafaData.mintOfTokenBeingSent.toString()} not present`, {
+        status: 400,
+        headers: ACTIONS_CORS_HEADERS,
+      });
+    }
+    const amountString = (lifafaData.amount / (10 ** token.decimals)).toString();
 
     const payload: ActionGetResponse = {
-      title: `🎉 Claim your share of ${amountString} ${tokenName} now!🚀✨`,
+      title: `🎉 Claim your share of ${amountString} ${token.name} now!🚀✨`,
       description: lifafaData.desc,
       icon: new URL("/claim_lifafa_og.png", new URL(req.url).origin).toString(),
       label: `Claim Now`,
