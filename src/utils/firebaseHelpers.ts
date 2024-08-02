@@ -1,4 +1,3 @@
-
 import { db } from "../lib/firebaseConfig";
 import {
   collection,
@@ -21,7 +20,7 @@ export async function storeLifafa(
   }
   id = String(id);
   try {
-    await setDoc(doc(db, network, walletPublicKey, id), {
+    await setDoc(doc(db, "lifafa", network, walletPublicKey, id), {
       id,
       transaction_hash,
       timestamp: serverTimestamp(),
@@ -41,7 +40,7 @@ export function retrieveLifafa(
   }
   try {
     const q = query(
-      collection(db, network, walletPublicKey),
+      collection(db, "lifafa", network, walletPublicKey),
       orderBy("timestamp", "desc"),
     );
 

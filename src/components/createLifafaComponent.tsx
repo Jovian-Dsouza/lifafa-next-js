@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { ClaimMode, useLifafaProgram } from "../hooks/useLifafaProgram";
 import { getRandomId } from "@/utils/random";
 import { tokens } from "@/data/constants";
@@ -79,7 +79,12 @@ export const CreateLifafaComponent = () => {
       );
       const txnHash = await executeRawTransaction(rawTxn);
 
-      storeLifafa(cluster.networkName, walletPublicKey.toString(), id, txnHash);
+      storeLifafa(
+        cluster.networkName,
+        walletPublicKey.toString(),
+        createLifafaData.id.toString(),
+        txnHash,
+      );
       setEnvelopModalVisible(true);
       setId(createLifafaData.id.toString());
     } catch (error) {
