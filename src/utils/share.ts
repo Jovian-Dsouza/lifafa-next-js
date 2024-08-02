@@ -5,6 +5,12 @@ export const openDailect = (id: string, network: string) => {
 };
 
 
+export const openClaimPage = (id: string) => {
+  const shareUrl = `https://www.lifafa.fun/claim_lifafa/${id}`;
+  window.open(shareUrl, "_blank");
+};
+
+
 export const copyToClipboard = (id: string) => {
   const content = `https://www.lifafa.fun/claim_lifafa/${id}`
   navigator.clipboard
