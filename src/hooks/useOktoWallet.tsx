@@ -20,7 +20,7 @@ const shortenWalletAddress = (address: string | null): string => {
 
 export function useOktoWallet(): CustomWalletContext {
   const {
-    getWallets,
+    createWallet,
     getPortfolio,
     isLoggedIn,
     executeRawTransactionWithJobStatus,
@@ -42,7 +42,7 @@ export function useOktoWallet(): CustomWalletContext {
 
   async function fetchWalletAddress() {
     try {
-      const walletData = await getWallets();
+      const walletData = await createWallet();
       console.log("wallet Data", walletData)
       const solanaWallet = walletData.wallets.find(
         (x: Wallet) => x.network_name === cluster.networkName,
