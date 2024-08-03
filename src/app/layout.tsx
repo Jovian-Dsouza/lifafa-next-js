@@ -17,7 +17,7 @@ import { OktoAuthProvider } from "@/providers/okto-auth-provider";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import OktoAuthButton from "@/components/OktoAuthButton";
-import { CustomWalletProvider } from "@/providers/custom-wallet-provider";
+import { CustomWalletProvider, WalletType } from "@/providers/custom-wallet-provider";
 import { ClusterProvider, networkType } from "@/providers/cluster-provider";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -39,6 +39,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await getServerSession(authOptions);
+  const walletType = (process.env.NEXT_PUBLIC_WALLET_TYPE || "connector") as WalletType
   return (
     <html lang="en">
       <body className={inter.className}>
@@ -52,7 +53,7 @@ export default async function RootLayout({
               <SolanaProvider>
                 <RecoilProvider>
                   <OktoAuthProvider session={session}>
-                    <CustomWalletProvider walletType="okto">
+                    <CustomWalletProvider walletType={walletType}>
                       <div className="flex min-h-screen flex-col">
                         <header className="container z-40 bg-background">
                           <div className="flex h-20 items-center justify-between py-10 ">
@@ -68,8 +69,7 @@ export default async function RootLayout({
                             </Link>
                           </div> */}
                             <nav className="flex items-center gap-2">
-                              {/* <WalletButton /> */}
-                              <OktoAuthButton />
+                              { walletType === "connector" ? <WalletButton /> : <OktoAuthButton />}
 
                               <ThemeModeToggle />
                             </nav>
