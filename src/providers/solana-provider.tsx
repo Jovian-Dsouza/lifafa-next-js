@@ -24,12 +24,12 @@ export const WalletButton = dynamic(
   { ssr: false },
 );
 
-// const TipLinkProvider = dynamic(
-//   async () => await import("./tiplink-provider"),
-//   {
-//     ssr: false,
-//   },
-// );
+const TipLinkProvider = dynamic(
+  async () => await import("./tiplink-provider"),
+  {
+    ssr: false,
+  },
+);
 
 export function SolanaProvider({ children }: { children: ReactNode }) {
   const { cluster } = useCluster();
@@ -40,11 +40,11 @@ export function SolanaProvider({ children }: { children: ReactNode }) {
 
   const wallets = useMemo(
     () => [
-      // new TipLinkWalletAdapter({
-      //   title: "Escrow Interface",
-      //   clientId: process.env.NEXT_PUBLIC_TIPLINK_WALLET_CLIENT_ID!,
-      //   theme: "light",
-      // }),
+      new TipLinkWalletAdapter({
+        title: "Lifafa",
+        clientId: process.env.NEXT_PUBLIC_TIPLINK_WALLET_CLIENT_ID!,
+        theme: "dark",
+      }),
       new PhantomWalletAdapter(),
       new SolflareWalletAdapter(),
     ],
@@ -53,9 +53,9 @@ export function SolanaProvider({ children }: { children: ReactNode }) {
   return (
     <ConnectionProvider endpoint={cluster.endpoint}>
       <WalletProvider wallets={wallets} onError={onError} autoConnect={true}>
-        {/* <TipLinkProvider> */}
+        <TipLinkProvider>
         <WalletModalProvider>{children}</WalletModalProvider>
-        {/* </TipLinkProvider> */}
+        </TipLinkProvider>
       </WalletProvider>
     </ConnectionProvider>
   );
