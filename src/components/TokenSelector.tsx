@@ -2,7 +2,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { ChevronDownIcon } from "lucide-react";
 import { tokens } from "../data/constants";
-// import { TokenSelectorModal } from "./TokenSelectorModal";
+import { TokenSelectorModal } from "./TokenSelectorModal";
 
 export const TokenSelector = ({
   token,
@@ -11,9 +11,15 @@ export const TokenSelector = ({
   token: any;
   onSelect: any;
 }) => {
-  const [modalVisible, setModalVisible] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
+
   function handleSelect() {
-    onSelect(tokens[0]); //TODO: add token based on drop box
+    setModalVisible(true);
+    // onSelect(tokens[0]); //TODO: add token based on drop box
+  }
+
+  function handleTokenSelect(selectedToken: any) {
+    onSelect(selectedToken);
   }
 
   return (
@@ -42,11 +48,11 @@ export const TokenSelector = ({
           className="flex items-center justify-center space-x-1"
         >
           <span className="font-semibold">{token.symbol}</span>
-          {/* <ChevronDownIcon className="h-4 w-4 text-gray-800" /> */}
+          <ChevronDownIcon className="h-4 w-4 text-gray-800" />
         </button>
         <span className="text-xs text-gray-500">on {token.blockchain}</span>
       </div>
-      {/* <TokenSelectorModal visible={modalVisible} setVisible={setModalVisible} /> */}
+      <TokenSelectorModal visible={modalVisible} setVisible={setModalVisible} onSelect={handleTokenSelect} />
     </div>
   );
 };

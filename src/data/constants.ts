@@ -3,7 +3,7 @@ import { images } from "./assets";
 const devnetTokens: Token[] = [
   {
     name: "USDC_DEVNET",
-    symbol: "USDC_DEVNET",
+    symbol: "USDC",
     icon: images.tokens.usdc,
     blockchain: "SOL_DEVNET",
     blockchainIcon: images.tokens.sol,
