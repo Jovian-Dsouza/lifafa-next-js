@@ -17,6 +17,6 @@ export async function getTokenPrice(token: string): Promise<number> {
     return priceResponse.data[token].price;
   } catch (error) {
     console.error("Error fetching token price:", error);
-    throw error;
+    return 0;
   }
 }

@@ -1,30 +1,79 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../styles/Card.module.scss";
-import { tokens } from "@/data/constants";
+import { getTokenByAddress, Token, tokens } from "@/data/constants";
 import Image from "next/image";
 import { TrashIcon } from "lucide-react";
+import { useLifafaProgram } from "@/hooks/useLifafaProgram";
+import dayjs from "dayjs";
+import { getTokenPrice } from "@/utils/jupiter-price";
+
+interface LifafaData {
+  id: string;
+  numDaysLeft: number;
+  amount: number;
+  price: number;
+  claimed: number;
+  maxClaims: number;
+  desc: string;
+  token: Token;
+}
 
 const Card = ({ id }: { id: string }) => {
+  const { fetchLifafa } = useLifafaProgram();
+  const [lifafaData, setLifafaData] = useState<null | LifafaData>();
 
-  const token = tokens[0]
-  const lifafaData = {
-    numDaysLeft: 2,
-    tokenIcon: token.icon, // Update with the actual path
-    amount: 1.5,
-    tokenSymbol: token.symbol,
-    amountInr: 5000,
-    claimed: 28,
-    maxClaims: 100,
-    desc: "Merry christmas and happy new year",
-  };
+  async function getLifafaData() {
+    try {
+      const lifafaId = Number(id)
+      const pdaData = await fetchLifafa(lifafaId);
+      if(!pdaData){
+        return;
+      }
+      const token = getTokenByAddress(pdaData.mintOfTokenBeingSent.toString())
+      if(!token){
+        return;
+      }
+      const tokenPrice = await getTokenPrice(token.address);
+      // console.log("pdaData: ", pdaData);
+      const expiryTime = dayjs.unix(
+        Number(pdaData.creationTime) + Number(pdaData.timeLimit)
+      );
+      const daysLeft = expiryTime.diff(dayjs(), "day");
+      const amount = Number(pdaData.amount / (10 ** token.decimals))
+      const price = amount * tokenPrice
+      const lifafaDataTmp: LifafaData = {
+        id: id,
+        numDaysLeft: daysLeft,
+        amount,
+        price,
+        claimed: pdaData.claims.toNumber(),
+        maxClaims: pdaData.maxClaims.toNumber(),
+        desc: pdaData.desc,
+        token: token,
+      };
+
+      setLifafaData(lifafaDataTmp);
+    } catch (error) {
+      console.log("getLifafaData: ", error);
+    }
+  }
 
   function handleDelete(){
     console.log("Delete")
   }
 
+  useEffect(()=>{
+    getLifafaData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  if(!lifafaData){
+    return null;
+  }
+
   return (
     <div className="relative">
-      <div className="absolute -top-1 right-3 w-14 py-0.5 px-2 rounded-b-lg rounded-tr-sm bg-red-500 z-10">
+      <div className="absolute -top-1 right-3 w-16 py-0.5 px-2 rounded-b-lg rounded-tr-sm bg-red-500 z-10">
         <p className="text-white text-xs text-center font-semibold">
           {lifafaData.numDaysLeft} Days
         </p>
@@ -37,7 +86,7 @@ const Card = ({ id }: { id: string }) => {
             {/*  Image */}
             <div className="relative">
               <Image
-                src={token.icon}
+                src={lifafaData.token.icon}
                 alt="Token Icon"
                 width={32}
                 height={32}
@@ -45,7 +94,7 @@ const Card = ({ id }: { id: string }) => {
               />
               <div className="absolute -bottom-1 -right-1 border-2 border-white rounded-full">
                 <Image
-                  src={token.blockchainIcon}
+                  src={lifafaData.token.blockchainIcon}
                   alt="Blockchain Icon"
                   width={16}
                   height={16}
@@ -55,8 +104,8 @@ const Card = ({ id }: { id: string }) => {
             </div>
             {/* Text Columns */}
             <div className="flex flex-col">
-              <span className="text-gray-900 text-sm font-bold leading-5">{lifafaData.amount} {lifafaData.tokenSymbol}</span>
-              <span className="text-gray-500 text-xs font-normal leading-4 mt-1">{lifafaData.amountInr} USDC</span>
+              <span className="text-gray-900 text-sm font-bold leading-5">{lifafaData.amount} {lifafaData.token.symbol}</span>
+              <span className="text-gray-500 text-xs font-normal leading-4 mt-1">{lifafaData.price.toFixed(2)} USDC</span>
             </div>
           </div>
 
