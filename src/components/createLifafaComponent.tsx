@@ -103,7 +103,7 @@ export const CreateLifafaComponent = () => {
   }
 
   return (
-    <div className="w-[22rem] bg-[#F5F6FE]  rounded-3xl p-4 shadow">
+    <div className="w-full md:w-[22rem] bg-[#F5F6FE]  rounded-3xl p-4 shadow">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold text-black">Create Lifafa</h2>
         <TokenBalance token={selectedToken} />
