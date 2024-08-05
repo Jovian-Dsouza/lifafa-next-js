@@ -171,6 +171,48 @@ export function useLifafaProgram() {
     }
   }
 
+  async function deleteLifafa(
+    id: any,
+    walletPublicKey: anchor.web3.PublicKey,
+  ): Promise<anchor.web3.Transaction> {
+    console.log("\nDeleting Envelope id: ", id);
+    if (!program) {
+      throw new Error("Program not initialized");
+    }
+    if (!walletPublicKey) {
+      throw new Error("Wallet not initialized");
+    }
+    if (!provider) {
+      throw new Error("Provider not initialized");
+    }
+    try {
+      const addPriorityFee = ComputeBudgetProgram.setComputeUnitPrice({
+        microLamports: 15000,
+      });
+      const txn = new Transaction().add(addPriorityFee);
+      const [lifafaPDA] = getLifafaPDA(id);
+      const data = await program.account.lifafa.fetch(lifafaPDA);
+      const mint = data.mintOfTokenBeingSent;
+      const vault = getAssociatedTokenAddressSync(mint, lifafaPDA, true);    
+      const instruction = await program.methods
+        .deleteSplLifafa(new anchor.BN(id))
+        .accounts({
+          mint: mint,
+          vault: vault,
+          signer: walletPublicKey,
+          tokenProgram: TOKEN_PROGRAM_ID,
+        })
+        .instruction();
+      txn.add(instruction);
+      txn.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+      txn.feePayer = walletPublicKey;
+      return txn;
+    } catch (error) {
+      console.error("Claim Lifafa Transaction error", error);
+      throw error;
+    }
+  }
+
   function getLifafaPDA(lifafaId: any) {
     return anchor.web3.PublicKey.findProgramAddressSync(
       [Buffer.from(LIFAFA_SEED), new BN(lifafaId).toArrayLike(Buffer, "le", 8)],
@@ -201,6 +243,7 @@ export function useLifafaProgram() {
       claimLifafa,
       getLifafaPDA,
       fetchLifafa,
+      deleteLifafa,
       program,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps

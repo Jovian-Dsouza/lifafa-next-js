@@ -7,6 +7,7 @@ import {
   query,
   onSnapshot,
   serverTimestamp,
+  deleteDoc,
 } from "firebase/firestore";
 
 export async function storeLifafa(
@@ -54,5 +55,21 @@ export function retrieveLifafa(
   } catch (error) {
     console.error("retrieveLifafa: ", error);
     return null;
+  }
+}
+
+export async function deleteLifafaInStore(
+  network: string,
+  walletPublicKey: string,
+  id: string,
+): Promise<void> {
+  if (!walletPublicKey || !id) {
+    return;
+  }
+  id = String(id);
+  try {
+    await deleteDoc(doc(db, "lifafa", network, walletPublicKey, id));
+  } catch (error) {
+    console.error("deleteLifafa: ", error);
   }
 }

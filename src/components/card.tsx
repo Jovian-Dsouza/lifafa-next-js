@@ -18,7 +18,7 @@ interface LifafaData {
   token: Token;
 }
 
-const Card = ({ id }: { id: string }) => {
+const Card = ({ id , onDelete}: { id: string, onDelete: (id: string) => void }) => {
   const { fetchLifafa } = useLifafaProgram();
   const [lifafaData, setLifafaData] = useState<null | LifafaData>();
 
@@ -59,7 +59,7 @@ const Card = ({ id }: { id: string }) => {
   }
 
   function handleDelete(){
-    console.log("Delete")
+    onDelete(id);
   }
 
   useEffect(()=>{
