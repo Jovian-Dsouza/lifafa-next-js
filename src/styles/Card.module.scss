@@ -1,58 +1,3 @@
-/* styles.scss */
-
-/* Card Component */
-.card {
-  display: flex;
-  width: 20.9375rem;
-  padding: 1rem;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 1rem;
-  flex-shrink: 0;
-  background: var(--Blue-100-Card, #f5f6fe);
-  border-radius: 1rem;
-}
-
-/* Inner Card */
-.innercard {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  align-self: stretch;
-}
-
-/* Image and Text Columns */
-.imagecontainer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.textColumn {
-  display: flex;
-  flex-direction: column;
-}
-
-.textPrimary {
-  color: var(--Text-Primary, #161616);
-  // font-family: Inter;
-  font-size: 0.875rem;
-  font-style: normal;
-  font-weight: 600;
-  line-height: 1.25rem;
-}
-
-.textSecondary {
-  color: var(--Text-Secondary, #707070);
-  // font-family: Inter;
-  font-size: 0.75rem;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 1rem;
-  margin-top: 0.25rem; /* Gap between text columns */
-}
-
 /* Progress Slider */
 .progressSlider {
   display: flex;
@@ -61,6 +6,7 @@
 }
 .progressBar {
   height: 8px; /* Set height of the progress bar */
+  width: 63%;
   // border-radius: 4px;
   // background-color: #fff;
 }
@@ -88,52 +34,4 @@
   font-weight: 400;
   line-height: 1rem;
   text-align: right;
-}
-
-/* Text in Border */
-.textInBborder {
-  display: flex;
-  width: 18.9375rem;
-  height: 1.5rem;
-  flex-direction: column;
-  justify-content: flex-end;
-}
-
-.textInBorderContent {
-  color: var(--Text-Secondary, #707070);
-  // font-family: Inter;
-  font-size: 0.875rem;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 1.5rem;
-}
-
-/* Buttons */
-.buttons {
-  display: flex;
-  gap: 1rem;
-}
-
-.button {
-  display: flex;
-  height: 2rem;
-  width: 9rem;
-  padding: 0.5rem 0.75rem;
-  justify-content: center;
-  align-items: center;
-  gap: 0.25rem;
-  flex: 1 0 0;
-  border-radius: 7.5rem;
-  border: 1px solid var(--Base-Stroke-2---Boarder, rgba(22, 22, 22, 0.12));
-  background: var(--Base-Background-1, #fff);
-}
-
-.buttonText {
-  color: var(--Text-Primary, #161616);
-  // font-family: Inter;
-  font-size: 0.75rem;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 1rem;
-  text-align: center;
 }
