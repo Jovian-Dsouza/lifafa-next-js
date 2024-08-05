@@ -58,9 +58,8 @@ export default async function RootLayout({
                         <header className="container z-40 bg-background">
                           <div className="flex h-20 items-center justify-between py-10 ">
                             <MainNav items={marketingConfig.mainNav} />
-                            <nav className="flex items-center gap-2">
+                            <nav className="flex min-w-[10rem] justify-end">
                               { walletType === "connector" ? <WalletButton /> : <OktoAuthButton />}
-                              {/* <ThemeModeToggle /> */}
                             </nav>
                           </div>
                         </header>
