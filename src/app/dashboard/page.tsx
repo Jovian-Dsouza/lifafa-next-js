@@ -62,8 +62,12 @@ const Dashboard: React.FC = () => {
     } 
   }
 
+  // useEffect(()=>{
+  //   console.log(lifafaIds)
+  // }, [lifafaIds])
+
   return (
-    <div className="py-12 w-full h-full">
+    <div className="py-6 md:py-12 w-full h-full">
       {lifafaIds.length === 0 ? (
         <NoLifafaFound />
       ) : (
@@ -91,7 +95,7 @@ const Dashboard: React.FC = () => {
         </div>
         )
       }
-      <div className="flex flex-wrap gap-10 mt-5">
+      <div className="flex flex-col md:flex-wrap gap-10 mt-5">
         {lifafaIds.map((id) => <Card key={id} id={id} onDelete={handleDelete}/>)}
       </div> 
     </div>
