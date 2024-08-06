@@ -89,6 +89,29 @@ const NoLifafaMessage = () => {
   );
 };
 
+const SuccessModal = ({ isOpen, onClose }: {isOpen: boolean, onClose: any}) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg">
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+          Lifafa Claimed Successfully!
+        </h2>
+        <p className="mt-2 text-gray-600 dark:text-gray-400">
+          You have successfully claimed the lifafa.
+        </p>
+        <button
+          className="mt-4 px-4 py-2 bg-blue-600 dark:bg-blue-500 text-white rounded hover:bg-blue-700 dark:hover:bg-blue-400 transition duration-300"
+          onClick={onClose}
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  );
+};
+
 const Redeem = ({ params }: { params: { id: string } }) => {
   const lifafaId = params.id;
   const { claimLifafa, fetchLifafa, program } = useLifafaProgram();
@@ -96,6 +119,7 @@ const Redeem = ({ params }: { params: { id: string } }) => {
   const [lifafaData, setLifafaData] = useState<LifafaData | null>(null);
   const disabled = useMemo(() => !program, [program]);
   const { walletPublicKey, executeRawTransaction } = useCustomWallet();
+  const [modalVisible, setModalVisible] = useState(false)
 
   async function getLifafaData() {
     if (!lifafaId) {
@@ -142,6 +166,7 @@ const Redeem = ({ params }: { params: { id: string } }) => {
       const rawTxn = await claimLifafa(Number(lifafaId), walletPublicKey);
       const txnHash = await executeRawTransaction(rawTxn);
       console.log("Lifafa claimed")
+      setModalVisible(true)
     } catch (error) {
       console.error("create Lifafa: ", error);
     }
@@ -162,35 +187,40 @@ const Redeem = ({ params }: { params: { id: string } }) => {
   }
 
   return (
-    <Container>
-      <div className="flex flex-col items-center justify-center gap-12">
-        <Image
-          src={RedeemLifafa}
-          alt="redeem envelop-image"
-          className="w-auto h-[20rem]"
-        />
+    <div className="w-full flex flex-col sm:flex-row items-center justify-center bg-background gap-[3rem] sm:gap-[14rem] mt-5">
+      <div className="w-[22rem] bg-[#F5F6FE]  rounded-3xl p-4 shadow flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center justify-center gap-12">
+          <Image
+            src={RedeemLifafa}
+            alt="redeem envelop-image"
+            className="w-auto h-[20rem]"
+          />
 
-        <div className="flex flex-col justify-center space-y-3 w-full">
-          <span className="text-sm text-gray-500">
-            From {lifafaData.ownerName}
-          </span>
-          <span className="text-2xl text-black font-bold">
-            {lifafaData.desc}
-          </span>
+          <div className="flex flex-col justify-center space-y-3 w-full">
+            <span className="text-sm text-gray-500">
+              From {lifafaData.ownerName}
+            </span>
+            <span className="text-2xl text-black font-bold">
+              {lifafaData.desc}
+            </span>
 
-          {isOpen ? (
-            <LifafaActions />
-          ) : (
-            <LifafaStatus
-              numDaysLeft={lifafaData.numDaysLeft}
-              claims={lifafaData.claims}
-              disabled={disabled}
-              onOpen={handleClaim}
-            />
-          )}
+            {isOpen ? (
+              <LifafaActions />
+            ) : (
+              <LifafaStatus
+                numDaysLeft={lifafaData.numDaysLeft}
+                claims={lifafaData.claims}
+                disabled={disabled}
+                onOpen={handleClaim}
+              />
+            )}
+          </div>
         </div>
       </div>
-    </Container>
+      <SuccessModal isOpen={modalVisible} onClose={() => {setModalVisible(false)}}/>
+
+    </div>
+    
   );
 };
 
