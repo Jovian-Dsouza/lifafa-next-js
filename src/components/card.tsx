@@ -73,7 +73,7 @@ const Card = ({ id , onDelete}: { id: string, onDelete: (id: string) => void }) 
   }
 
   return (
-    <div className="relative w-full md:w-[21rem]">
+    <div className="relative w-full sm:w-[21rem]">
       <div className="absolute -top-1 right-3 w-16 py-0.5 px-2 rounded-b-lg rounded-tr-sm bg-red-500 z-10">
         <p className="text-white text-xs text-center font-semibold">
           {lifafaData.numDaysLeft} Days

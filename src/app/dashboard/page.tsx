@@ -95,9 +95,9 @@ const Dashboard: React.FC = () => {
         </div>
         )
       }
-      <div className="flex flex-col md:flex-wrap gap-10 mt-5">
-        {lifafaIds.map((id) => <Card key={id} id={id} onDelete={handleDelete}/>)}
-      </div> 
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10 xl:gap-32 mt-5">
+        {lifafaIds.map((id) => <Card key={id} id={id} onDelete={handleDelete} />)}
+      </div>
     </div>
   );
 };
