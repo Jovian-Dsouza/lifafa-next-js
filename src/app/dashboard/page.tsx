@@ -6,6 +6,28 @@ import { useEffect, useState } from "react";
 import { useCluster } from "@/providers/cluster-provider";
 import { useCustomWallet } from "@/providers/custom-wallet-provider";
 import { useLifafaProgram } from "@/hooks/useLifafaProgram";
+import { useRouter } from "next/navigation";
+
+const NoLifafaFound: React.FC = () => {
+  const router = useRouter();
+
+  return (
+    <div className="flex flex-col items-center justify-center h-64 text-center">
+      {/* <img src="/no-data.svg" alt="No Data" className="w-32 h-32 mb-4" /> */}
+      <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">No Lifafa Found 🀄</h2>
+      <p className="mt-2 text-gray-500 dark:text-gray-400">
+        It looks like you have not created any lifafas yet.
+      </p>
+      <button
+        onClick={() => router.push('/')}
+        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
+      >
+        Create Lifafa
+      </button>
+    </div>
+  );
+};
+
 
 const Dashboard: React.FC = () => {
   const { walletPublicKey, executeRawTransaction } = useCustomWallet();
@@ -22,6 +44,7 @@ const Dashboard: React.FC = () => {
       }
     };
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [walletPublicKey]);
 
   async function handleDelete(id: string) {
@@ -39,45 +62,38 @@ const Dashboard: React.FC = () => {
     } 
   }
 
-  // useEffect(()=>{
-  //   console.log("Lifafa Ids", lifafaIds)
-  // }, [lifafaIds])
-
   return (
     <div className="py-12 w-full h-full">
-      <div className="flex flex-col w-full">
-        <h1 className="text-3xl font-bold text-gray-300">My Envelopes</h1>
-
-        {/* Card type selector */}
-        {/* <div className="flex gap-8 py-8 text-white">
-          <span
-            onClick={() => handleSelect(1)}
-            className={`cursor-pointer border-b-2 ${
-              selected === 1 ? "border-blue-500" : "border-transparent"
-            }`}
-          >
-            Sent
-          </span>
-          <span
-            onClick={() => handleSelect(2)}
-            className={`cursor-pointer border-b-2 ${
-              selected === 2 ? "border-blue-500" : "border-transparent"
-            }`}
-          >
-            Collected
-          </span>
-        </div> */}
-      </div>
-
       {lifafaIds.length === 0 ? (
-        <div className="text-white text-center font-semibold mt-5 items-center justify-center">No Lifafa found 🀄</div>
+        <NoLifafaFound />
       ) : (
-         <div className="flex flex-wrap gap-10 mt-5">
-          {lifafaIds.map((id) => <Card key={id} id={id} onDelete={handleDelete}/>)}
+        <div className="flex flex-col w-full">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">My Lifafas</h1>
+          {/* Card type selector */}
+          {/* <div className="flex gap-8 py-8 text-white">
+            <span
+              onClick={() => handleSelect(1)}
+              className={`cursor-pointer border-b-2 ${
+                selected === 1 ? "border-blue-500" : "border-transparent"
+              }`}
+            >
+              Sent
+            </span>
+            <span
+              onClick={() => handleSelect(2)}
+              className={`cursor-pointer border-b-2 ${
+                selected === 2 ? "border-blue-500" : "border-transparent"
+              }`}
+            >
+              Collected
+            </span>
+          </div> */}
         </div>
-      )
-    }
-     
+        )
+      }
+      <div className="flex flex-wrap gap-10 mt-5">
+        {lifafaIds.map((id) => <Card key={id} id={id} onDelete={handleDelete}/>)}
+      </div> 
     </div>
   );
 };
