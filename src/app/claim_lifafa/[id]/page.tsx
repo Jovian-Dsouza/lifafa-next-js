@@ -8,7 +8,7 @@ import { useLifafaProgram } from "@/hooks/useLifafaProgram";
 import { getTokenByAddress } from "@/data/constants";
 import { LifafaData } from "@/Types";
 import { useCustomWallet } from "@/providers/custom-wallet-provider";
-import { useTheme } from "next-themes";
+import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 
 const LifafaStatus = ({
   numDaysLeft,
@@ -74,9 +74,16 @@ const LifafaActions = () => {
 
 const NoLifafaMessage = () => {
   return (
-    <div className={`min-h-screen w-full flex flex-col mt-[10rem] md:mt-[15rem]`}>
-      <div className="flex justify-center items-center w-full">
-        <span className={`font-bold text-xl text-black dark:text-white`}>No lifafa found or deleted</span>
+    <div className="h-full w-full flex flex-col items-center justify-center">
+      <div className="flex flex-col items-center mt-[6rem] md:mt-[10rem] p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+        <ExclamationCircleIcon className="h-20 w-20 text-blue-600 dark:text-blue-300 mb-4" />
+        <span className="font-bold text-lg md:text-2xl text-gray-800 dark:text-gray-200">No lifafa found</span>
+        <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 mt-2 text-center max-w-sm">
+          It seems that the lifafa you are looking for is not available.
+        </p>
+        {/* <button className="mt-6 px-4 py-2 bg-blue-600 dark:bg-blue-500 text-white rounded hover:bg-blue-700 dark:hover:bg-blue-400 transition duration-300">
+          Go Back
+        </button> */}
       </div>
     </div>
   );
@@ -121,7 +128,7 @@ const Redeem = ({ params }: { params: { id: string } }) => {
         tokenSymbol: mintToken.symbol,
         tokenIcon: mintToken.icon,
       };
-      // setLifafaData(lifafaDataTmp);
+      setLifafaData(lifafaDataTmp);
     } catch (error) {
       console.log("getLifafaData: ", error);
     }
