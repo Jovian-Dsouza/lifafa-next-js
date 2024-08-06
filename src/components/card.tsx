@@ -6,6 +6,7 @@ import { TrashIcon } from "lucide-react";
 import { useLifafaProgram } from "@/hooks/useLifafaProgram";
 import dayjs from "dayjs";
 import { getTokenPrice } from "@/utils/jupiter-price";
+import { copyToClipboard, openClaimPage } from "@/utils/share";
 
 interface LifafaData {
   id: string;
@@ -78,7 +79,7 @@ const Card = ({ id , onDelete}: { id: string, onDelete: (id: string) => void }) 
           {lifafaData.numDaysLeft} Days
         </p>
       </div>
-      <div className="flex w-[21rem] p-4 flex-col items-start gap-4 flex-shrink-0 bg-blue-100 rounded-lg">
+      <div className="flex w-full md:w-[21rem] p-4 flex-col items-start gap-4 flex-shrink-0 bg-blue-100 rounded-lg">
         {/* Inner Card */}
         <div className="flex gap-3 w-full justify-between items-center">
           {/* Image Container */}
@@ -131,10 +132,10 @@ const Card = ({ id , onDelete}: { id: string, onDelete: (id: string) => void }) 
 
         {/* Buttons */}
         <div className="flex gap-4 justify-between w-full">
-          <button className="flex h-8 w-36 justify-center items-center gap-1 flex-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 transition duration-150">
+          <button onClick={() => copyToClipboard(id)} className="flex h-8 w-36 justify-center items-center gap-1 flex-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 transition duration-150">
             <span className="text-gray-900 text-xs font-medium leading-4">Copy Link</span>
           </button>
-          <button className="flex h-8 w-36 justify-center items-center gap-1 flex-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 transition duration-150">
+          <button onClick={() => openClaimPage(id)} className="flex h-8 w-36 justify-center items-center gap-1 flex-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 transition duration-150">
             <span className="text-gray-900 text-xs font-medium leading-4">Share</span>
           </button>
         </div>

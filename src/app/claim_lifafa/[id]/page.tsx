@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
-import { LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
 import dayjs from "dayjs";
 import { Container } from "@/components/Container";
 import Image from "next/image";
@@ -9,6 +8,7 @@ import { useLifafaProgram } from "@/hooks/useLifafaProgram";
 import { getTokenByAddress } from "@/data/constants";
 import { LifafaData } from "@/Types";
 import { useCustomWallet } from "@/providers/custom-wallet-provider";
+import { useTheme } from "next-themes";
 
 const LifafaStatus = ({
   numDaysLeft,
@@ -72,6 +72,16 @@ const LifafaActions = () => {
   );
 };
 
+const NoLifafaMessage = () => {
+  return (
+    <div className={`min-h-screen w-full flex flex-col mt-[10rem] md:mt-[15rem]`}>
+      <div className="flex justify-center items-center w-full">
+        <span className={`font-bold text-xl text-black dark:text-white`}>No lifafa found or deleted</span>
+      </div>
+    </div>
+  );
+};
+
 const Redeem = ({ params }: { params: { id: string } }) => {
   const lifafaId = params.id;
   const { claimLifafa, fetchLifafa, program } = useLifafaProgram();
@@ -82,7 +92,7 @@ const Redeem = ({ params }: { params: { id: string } }) => {
 
   async function getLifafaData() {
     if (!lifafaId) {
-      setLifafaData(null);
+      return;
     }
     try {
       const id = Number(lifafaId);
@@ -111,10 +121,9 @@ const Redeem = ({ params }: { params: { id: string } }) => {
         tokenSymbol: mintToken.symbol,
         tokenIcon: mintToken.icon,
       };
-      setLifafaData(lifafaDataTmp);
+      // setLifafaData(lifafaDataTmp);
     } catch (error) {
       console.log("getLifafaData: ", error);
-      setLifafaData(null);
     }
   }
 
@@ -139,11 +148,7 @@ const Redeem = ({ params }: { params: { id: string } }) => {
 
   if (!lifafaData) {
     return (
-      <div className="min-h-screen w-[23rem] flex flex-col items-center justify-center bg-background">
-        <div className="flex justify-center items-center w-full mt-24">
-          <span className="font-bold text-xl">Loading ...</span>
-        </div>
-      </div>
+      <NoLifafaMessage />
     );
   }
 

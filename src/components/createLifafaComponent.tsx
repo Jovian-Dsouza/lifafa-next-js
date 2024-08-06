@@ -153,8 +153,8 @@ export const CreateLifafaComponent = () => {
           copyToClipboard(id);
         }}
         onShare={() => {
-          openDailect(id, cluster.name);
-          // openClaimPage(id);
+          // openDailect(id, cluster.name);
+          openClaimPage(id);
         }}
         onClose={() => {
           clearStates();
