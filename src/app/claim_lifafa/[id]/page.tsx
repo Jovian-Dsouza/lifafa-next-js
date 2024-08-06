@@ -95,7 +95,7 @@ const Redeem = ({ params }: { params: { id: string } }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [lifafaData, setLifafaData] = useState<LifafaData | null>(null);
   const disabled = useMemo(() => !program, [program]);
-  const { walletPublicKey } = useCustomWallet();
+  const { walletPublicKey, executeRawTransaction } = useCustomWallet();
 
   async function getLifafaData() {
     if (!lifafaId) {
@@ -139,7 +139,9 @@ const Redeem = ({ params }: { params: { id: string } }) => {
       throw new Error("Wallet not initialized");
     }
     try {
-      await claimLifafa(Number(lifafaId), walletPublicKey);
+      const rawTxn = await claimLifafa(Number(lifafaId), walletPublicKey);
+      const txnHash = await executeRawTransaction(rawTxn);
+      console.log("Lifafa claimed")
     } catch (error) {
       console.error("create Lifafa: ", error);
     }
